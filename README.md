@@ -1,6 +1,6 @@
-# Effective LearnDash
+# Effective Learndash
 
-Create Wordpress users and read LearnDash course progress. This is an unoffocial integration that is not supported or affiliated with WordPress or LearnDash.
+Create Wordpress users and read Learndash course progress. This is an unoffocial integration that is not supported or affiliated with WordPress or Learndash.
 
 ## Getting Started
 
@@ -44,7 +44,7 @@ Add a link to the admin menu:
 
 ```haml
 - if can? :admin, :effective_learndash
-  = nav_link_to 'LearnDash', effective_learndash.admin_learndash_path
+  = nav_link_to 'Learndash', effective_learndash.admin_learndash_path
 ```
 
 and visit `/admin/learndash`.
@@ -63,9 +63,9 @@ if user.admin?
 end
 ```
 
-## Configuring LearnDash
+## Configuring Learndash
 
-Your Wordpress should be configured ahead of time with the LearnDash plugin.
+Your Wordpress should be configured ahead of time with the Learndash plugin.
 
 Please generate an application password via:
 

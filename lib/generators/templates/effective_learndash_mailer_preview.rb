@@ -1,4 +1,4 @@
 # Visit http://localhost:3000/rails/mailers
 
-class EffectiveLearnDashMailerPreview < ActionMailer::Preview
+class EffectiveLearndashMailerPreview < ActionMailer::Preview
 end

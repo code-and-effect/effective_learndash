@@ -29,8 +29,8 @@ class ActiveSupport::TestCase
   include EffectiveLearndashTestHelper
 end
 
-# LearnDash Specific Stuff
-if ENV['learndash_URL'].blank?
+# Learndash Specific Stuff
+if ENV['LEARNDASH_URL'].blank?
   require "dotenv/load"
 end
 

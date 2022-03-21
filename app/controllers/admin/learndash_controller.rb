@@ -7,7 +7,7 @@ module Admin
 
     # /admin/learndash
     def index
-      @page_title = 'LearnDash'
+      @page_title = 'Learndash'
     end
 
   end

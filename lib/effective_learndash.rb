@@ -14,7 +14,16 @@ module EffectiveLearndash
   include EffectiveGem
 
   def self.api
-    Effective::LearndashApi.new
+    raise('please set learndash_url in config/initializers/effective_learndash.rb') unless learndash_url.present?
+    raise('please set learndash_username in config/initializers/effective_learndash.rb') unless learndash_username.present?
+    raise('please set learndash_password in config/initializers/effective_learndash.rb') unless learndash_password.present?
+
+    Effective::LearndashApi.new(
+      url: learndash_url,
+      username: learndash_username,
+      password: learndash_password
+    )
+
   end
 
 end

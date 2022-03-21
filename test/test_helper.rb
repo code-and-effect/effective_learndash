@@ -1,6 +1,10 @@
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
 
+if ENV['LEARNDASH_URL'].blank?
+  require "dotenv/load"
+end
+
 require_relative "../test/dummy/config/environment"
 ActiveRecord::Migrator.migrations_paths = [File.expand_path("../test/dummy/db/migrate", __dir__)]
 ActiveRecord::Migrator.migrations_paths << File.expand_path('../db/migrate', __dir__)
@@ -27,11 +31,6 @@ class ActiveSupport::TestCase
 
   include EffectiveLearndashTestBuilder
   include EffectiveLearndashTestHelper
-end
-
-# Learndash Specific Stuff
-if ENV['LEARNDASH_URL'].blank?
-  require "dotenv/load"
 end
 
 # Load the seeds

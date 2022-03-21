@@ -1,0 +1,2 @@
+module EffectiveLearndashHelper
+end

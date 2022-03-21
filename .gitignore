@@ -1,0 +1,17 @@
+/.bundle/
+/doc/
+/log/*.log
+/pkg/
+/tmp/
+/test/dummy/db/*.sqlite3
+/test/dummy/db/*.sqlite3-*
+/test/dummy/log/*.log
+/test/dummy/storage/
+/test/dummy/tmp/
+.byebug_history
+
+.env
+/.env
+/.env.local
+/.env.production
+.vscode

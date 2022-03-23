@@ -26,19 +26,19 @@ module Effective
     end
 
     # Returns a WP Hash of User or nil
-    def find_user(param)
+    def find_user(value)
       # Find by email
-      if param.to_s.include?('@')
-        return find("/wp/v2/users", context: :edit, search: param)
+      if value.to_s.include?('@')
+        return find("/wp/v2/users", context: :edit, search: value)
       end
 
-      # Find by user_id
-      user_id = user_id(param)
+      # Find by param value
+      user_id = user_id(value)
       user = find("/wp/v2/users/#{user_id}", context: :edit) if user_id
       return user if user.present?
 
       # Find by email
-      email = param.try(:email)
+      email = value.try(:email)
       user = find("/wp/v2/users", context: :edit, search: email) if email
       return user if user.present?
 
@@ -48,18 +48,24 @@ module Effective
 
     def create_user(owner)
       raise ('expected a leardash owner') unless owner.class.respond_to?(:effective_learndash_owner?)
+      raise('owner must have an email') unless owner.try(:email).present?
+
+      username = EffectiveLearndash.wp_username_for(owner)
+      password = EffectiveLearndash.wp_password_for(owner)
 
       payload = {
-        username: EffectiveLearndash.wp_username_for(owner),
-        password: EffectiveLearndash.wp_password_for(owner),
+        username: username,
+        password: password,
 
         name: owner.to_s,
+        email: owner.email,
+        roles: ['subscriber'],
+
         first_name: owner.try(:first_name),
-        last_name: owner.try(:last_name),
-        email: owner.try(:email)
+        last_name: owner.try(:last_name)
       }.compact
 
-      post("/wp/v2/users", payload.stringify_keys)
+      post("/wp/v2/users", payload.stringify_keys).merge(password: password)
     end
 
     def courses
@@ -128,10 +134,9 @@ module Effective
         http.post(uri.path, (params || {}).to_json, headers)
       end
 
-      # unless response.code == '200' || response.code == '204'
-      #   puts("Response code: #{response.code} #{response.body}")
-      #   return false
-      # end
+      unless response.code.start_with?('2')
+        raise("Invalid Learndash API request: #{response.body}")
+      end
 
       JSON.parse(response.body, symbolize_names: true)
     end

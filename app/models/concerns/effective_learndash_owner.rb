@@ -27,17 +27,9 @@ module EffectiveLearndashOwner
 
   def find_or_create_learndash_user
     learndash_user || begin
-      data = learndash_api.find_user(self)
-      binding.pry
-      data ||= learndash_api.create_user(self)
-      binding.pry
-
-      user = learndash_users.build()
-
-      attributes = { username: data.fetch(:username), password: data.fetch(:password), user_id: data.fetch(:id) }
-      user.update!(attributes)
-
-      user
+      data = learndash_api.find_user(self) || learndash_api.create_user(self)
+      attributes = { user_id: data[:id], username: data[:username], password: (data[:password].presence || 'unknown') }
+      learndash_users.create!(attributes)
     end
   end
 

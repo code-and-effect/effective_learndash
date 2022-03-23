@@ -7,6 +7,8 @@ end
 EffectiveLearndash::Engine.routes.draw do
   namespace :admin do
     get '/learndash', to: 'learndash#index', as: :learndash
+
+    resources :learndash_users, only: [:index]
   end
 
 end

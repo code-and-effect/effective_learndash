@@ -20,8 +20,46 @@ module Effective
       get('/wp/v2/users/me')
     end
 
+    # Usernames can only contain lowercase letters (a-z) and numbers.
     def users
       get('/wp/v2/users')
+    end
+
+    # Returns a WP Hash of User or nil
+    def find_user(param)
+      # Find by email
+      if param.to_s.include?('@')
+        return find("/wp/v2/users", context: :edit, search: param)
+      end
+
+      # Find by user_id
+      user_id = user_id(param)
+      user = find("/wp/v2/users/#{user_id}", context: :edit) if user_id
+      return user if user.present?
+
+      # Find by email
+      email = param.try(:email)
+      user = find("/wp/v2/users", context: :edit, search: email) if email
+      return user if user.present?
+
+      # Otherwise none
+      nil
+    end
+
+    def create_user(owner)
+      raise ('expected a leardash owner') unless owner.class.respond_to?(:effective_learndash_owner?)
+
+      payload = {
+        username: EffectiveLearndash.wp_username_for(owner),
+        password: EffectiveLearndash.wp_password_for(owner),
+
+        name: owner.to_s,
+        first_name: owner.try(:first_name),
+        last_name: owner.try(:last_name),
+        email: owner.try(:email)
+      }.compact
+
+      post("/wp/v2/users", payload.stringify_keys)
     end
 
     def courses
@@ -29,6 +67,32 @@ module Effective
     end
 
     private
+
+    def user_id(resource)
+      if resource.class.respond_to?(:effective_learndash_owner?) # This is a user
+        resource.learndash_users.first&.user_id
+      elsif resource.kind_of?(LearndashUser)
+        resource.user_id
+      else
+        resource
+      end
+    end
+
+    def find(endpoint, params = nil)
+      response = get(endpoint, params)
+
+      if response == false
+        nil
+      elsif response.kind_of?(Hash) && response.dig(:data, :status) == 404
+        nil
+      elsif response.kind_of?(Hash)
+        response
+      elsif response.kind_of?(Array)
+        response.first
+      else
+        raise("unexpected Learndash API response #{respone}")
+      end
+    end
 
     def get(endpoint, params = nil)
       query = ('?' + params.compact.map { |k, v| "#{k}=#{v}" }.join('&')) if params.present?
@@ -40,8 +104,13 @@ module Effective
       http.read_timeout = 10
 
       response = with_retries do
-        puts "[GET] #{uri}" if Rails.env.development?
+        puts("[GET] #{uri}") if Rails.env.development?
         http.get(uri, headers)
+      end
+
+      unless response.code.start_with?('2')
+        puts("Response code: #{response.code} #{response.body}") if Rails.env.development?
+        return false
       end
 
       JSON.parse(response.body, symbolize_names: true)
@@ -55,14 +124,14 @@ module Effective
       http.read_timeout = 10
 
       response = with_retries do
-        puts "[POST] #{uri} #{params}" if Rails.env.development?
+        puts("[POST] #{uri} #{params}") if Rails.env.development?
         http.post(uri.path, (params || {}).to_json, headers)
       end
 
-      unless response.code == '200' || response.code == '204'
-        puts("Response code: #{response.code} #{response.body}")
-        return false
-      end
+      # unless response.code == '200' || response.code == '204'
+      #   puts("Response code: #{response.code} #{response.body}")
+      #   return false
+      # end
 
       JSON.parse(response.body, symbolize_names: true)
     end
@@ -74,7 +143,8 @@ module Effective
     def headers
       {
         'Authorization': "Basic #{Base64.strict_encode64("#{username}:#{password}")}",
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       }
     end
 

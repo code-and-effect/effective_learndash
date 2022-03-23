@@ -1,3 +1,5 @@
+- owner.find_or_create_learndash_user
+
 = card('LearnDash User') do
 
   - if owner.learndash_user.blank?
@@ -10,3 +12,5 @@
       %li Email: #{owner.email}
       %li Username: #{owner.learndash_user.username}
       %li Password: #{owner.learndash_user.password}
+
+    %p= link_to "LearnDash #{owner.learndash_user}", EffectiveLearndash.learndash_url

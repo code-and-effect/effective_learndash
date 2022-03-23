@@ -1,9 +1,10 @@
 module Admin
   class EffectiveLearndashUsersDatatable < Effective::Datatable
     datatable do
-      col :user
+      col :owner
 
-      col :user_id, label: 'Wordpress User'
+      col :user_id, label: 'Wordpress Id'
+      col :email
       col :username
       col :password
 

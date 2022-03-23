@@ -17,7 +17,7 @@ module EffectiveLearndashOwner
 
   included do
     # Effective Scoped - this is a has_one in preactice
-    has_many :learndash_users, class_name: 'Effective::LearndashUser', inverse_of: :owner, dependent: :delete_all
+    has_many :learndash_users, class_name: 'Effective::LearndashUser', as: :owner, inverse_of: :owner, dependent: :delete_all
     accepts_nested_attributes_for :learndash_users, allow_destroy: true
   end
 
@@ -26,17 +26,30 @@ module EffectiveLearndashOwner
   end
 
   def find_or_create_learndash_user
-    learndash_user || begin
-      data = learndash_api.find_user(self) || learndash_api.create_user(self)
-      attributes = { user_id: data[:id], username: data[:username], password: (data[:password].presence || 'unknown') }
-      learndash_users.create!(attributes)
-    end
+    learndash_user || create_learndash_user!
   end
 
   private
 
   def learndash_api
     @learndash_api ||= EffectiveLearndash.api
+  end
+
+  def create_learndash_user!
+    raise('must be persisted to create a learndash user') unless persisted?
+
+    data = learndash_api.find_user(self) || learndash_api.create_user(self)
+
+    lduser = self.learndash_users.build(owner: self)
+
+    lduser.update!(
+      email: data[:email],
+      user_id: data[:id],
+      username: data[:username],
+      password: (data[:password] || 'unknown')
+    )
+
+    lduser
   end
 
 end

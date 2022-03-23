@@ -6,10 +6,11 @@ module Effective
     effective_resource do
       # This user the wordpress credentials
       user_id                   :integer
+      email                     :string
       username                  :string
       password                  :string
 
-      last_course_assigned_at   :datetime
+      last_course_enroled_at   :datetime
       last_course_completed_at  :datetime
 
       timestamps
@@ -19,6 +20,7 @@ module Effective
     scope :sorted, -> { order(:id) }
 
     validates :user_id, presence: true
+    validates :email, presence: true
     validates :username, presence: true
     validates :password, presence: true
 

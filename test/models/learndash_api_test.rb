@@ -51,25 +51,22 @@ class LearndashApiTest < ActiveSupport::TestCase
     assert response.blank?
   end
 
-  test 'create user' do
-    api = EffectiveLearndash.api
-    id = Time.zone.now.to_i
+  # This creates a user on wordpress
+  # test 'create user' do
+  #   api = EffectiveLearndash.api
+  #   user = build_unique_user()
 
-    user = build_user()
-    user.update!(id: id, email: "user#{id}@example.com")
+  #   response = api.find_user(user)
+  #   assert response.blank?
 
-    response = api.find_user(user)
-    assert response.blank?
+  #   response = api.create_user(user)
+  #   assert response.present?
 
-    response = api.create_user(user)
-    assert response.present?
+  #   assert_equal user.email, response[:email]
+  #   assert_equal user.first_name, response[:first_name]
+  #   assert_equal user.last_name, response[:last_name]
 
-    assert_equal user.email, response[:email]
-    assert response[:password].present?
-
-    assert_equal user.first_name, response[:first_name]
-    assert_equal user.last_name, response[:last_name]
-
-    assert_equal ['subscriber'], response[:roles]
-  end
+  #   assert response[:password].present?
+  #   assert_equal ['subscriber'], response[:roles]
+  # end
 end

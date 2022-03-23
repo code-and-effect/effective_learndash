@@ -16,9 +16,10 @@ ActiveRecord::Schema.define(version: 2) do
     t.integer "owner_id"
     t.string "owner_type"
     t.integer "user_id"
+    t.string "email"
     t.string "username"
     t.string "password"
-    t.datetime "last_course_assigned_at"
+    t.datetime "last_course_enrolled_at"
     t.datetime "last_course_completed_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

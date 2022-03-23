@@ -16,4 +16,10 @@ module EffectiveLearndashTestBuilder
     )
   end
 
+  def build_unique_user
+    id = Time.zone.now.to_i
+    user = build_user()
+    user.update!(id: id, email: "user#{id}@example.com")
+    user
+  end
 end

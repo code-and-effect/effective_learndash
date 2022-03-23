@@ -20,7 +20,6 @@ module Effective
       get('/wp/v2/users/me')
     end
 
-    # Usernames can only contain lowercase letters (a-z) and numbers.
     def users
       get('/wp/v2/users')
     end
@@ -28,7 +27,7 @@ module Effective
     # Returns a WP Hash of User or nil
     def find_user(value)
       # Find by email
-      if value.to_s.include?('@')
+      if value.kind_of?(String) && value.include?('@')
         return find("/wp/v2/users", context: :edit, search: value)
       end
 
@@ -46,6 +45,7 @@ module Effective
       nil
     end
 
+    # Usernames can only contain lowercase letters (a-z) and numbers.
     def create_user(owner)
       raise ('expected a leardash owner') unless owner.class.respond_to?(:effective_learndash_owner?)
       raise('owner must have an email') unless owner.try(:email).present?
@@ -76,7 +76,7 @@ module Effective
 
     def user_id(resource)
       if resource.class.respond_to?(:effective_learndash_owner?) # This is a user
-        resource.learndash_users.first&.user_id
+        resource.learndash_user&.user_id
       elsif resource.kind_of?(LearndashUser)
         resource.user_id
       else

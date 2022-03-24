@@ -69,7 +69,7 @@ module Effective
     end
 
     def courses
-      get('/ldlms/v2/courses')
+      get('/ldlms/v2/sfwd-courses')
     end
 
     private

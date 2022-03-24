@@ -1,0 +1,25 @@
+= card('Learndash User') do
+  %table.table.table-sm
+    %tr
+      %td Owner
+      %td= link_to(learndash_user.owner, "/admin/users/#{learndash_user.owner.to_param}/edit")
+
+    %tr
+      %td Wordpress Id
+      %td= learndash_user.user_id
+
+    %tr
+      %td Email
+      %td= learndash_user.email
+
+    %tr
+      %td Username
+      %td= learndash_user.username
+
+    %tr
+      %td Password
+      %td= learndash_user.password
+
+    %tr
+      %td Url
+      %td= link_to "LearnDash", EffectiveLearndash.learndash_url

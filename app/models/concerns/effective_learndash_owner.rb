@@ -31,25 +31,9 @@ module EffectiveLearndashOwner
 
   private
 
-  def learndash_api
-    @learndash_api ||= EffectiveLearndash.api
-  end
-
   def create_learndash_user!
     raise('must be persisted to create a learndash user') unless persisted?
-
-    data = learndash_api.find_user(self) || learndash_api.create_user(self)
-
-    lduser = self.learndash_users.build(owner: self)
-
-    lduser.update!(
-      email: data[:email],
-      user_id: data[:id],
-      username: data[:username],
-      password: (data[:password] || 'unknown')
-    )
-
-    lduser
+    learndash_users.create!(owner: self)
   end
 
 end

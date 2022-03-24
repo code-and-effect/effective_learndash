@@ -1,4 +1,4 @@
-- owner.find_or_create_learndash_user
+-# - owner.find_or_create_learndash_user
 
 = card('LearnDash User') do
 
@@ -6,6 +6,7 @@
     %p #{owner} does not yet have an account on LearnDash.
 
   - if owner.learndash_user.present?
+
     %p #{owner} has an existing account on LearnDash.
 
     %ul

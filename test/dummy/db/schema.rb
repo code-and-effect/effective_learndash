@@ -12,6 +12,30 @@
 
 ActiveRecord::Schema.define(version: 2) do
 
+  create_table "learndash_courses", force: :cascade do |t|
+    t.integer "course_id"
+    t.string "status"
+    t.string "title"
+    t.string "link"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "learndash_progresses", force: :cascade do |t|
+    t.integer "owner_id"
+    t.string "owner_type"
+    t.integer "learndash_course_id"
+    t.integer "learndash_user_id"
+    t.string "progress_status"
+    t.integer "last_step"
+    t.integer "steps_completed"
+    t.integer "steps_total"
+    t.datetime "date_started"
+    t.datetime "date_completed"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "learndash_users", force: :cascade do |t|
     t.integer "owner_id"
     t.string "owner_type"
@@ -19,8 +43,6 @@ ActiveRecord::Schema.define(version: 2) do
     t.string "email"
     t.string "username"
     t.string "password"
-    t.datetime "last_course_enrolled_at"
-    t.datetime "last_course_completed_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

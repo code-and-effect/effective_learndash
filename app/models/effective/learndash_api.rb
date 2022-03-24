@@ -20,6 +20,7 @@ module Effective
       get('/wp/v2/users/me')
     end
 
+    # List users
     def users
       get('/wp/v2/users')
     end
@@ -45,6 +46,7 @@ module Effective
       nil
     end
 
+    # Create User
     # Usernames can only contain lowercase letters (a-z) and numbers.
     def create_user(owner)
       raise ('expected a leardash owner') unless owner.class.respond_to?(:effective_learndash_owner?)
@@ -68,8 +70,46 @@ module Effective
       post("/wp/v2/users", payload.stringify_keys).merge(password: password)
     end
 
+    # List Courses
     def courses
       get('/ldlms/v2/sfwd-courses')
+    end
+
+    # List User Course Progress
+    def user_course_progresses(user)
+      id = user_id(user)
+      get("/ldlms/v2/users/#{id}/course-progress")
+    end
+
+    # Helper methods for enrollments
+    def find_enrollment(enrollment)
+      find_user_course(enrollment.learndash_user, enrollment.learndash_course)
+    end
+
+    def create_enrollment(enrollment)
+      create_user_course(enrollment.learndash_user, enrollment.learndash_course)
+    end
+
+    # Find User Course Progress
+    def find_user_course(user, course)
+      user = user_id(user) || raise('expected a user')
+      course = course_id(course) || raise('expected a course')
+
+      find("/ldlms/v2/users/#{user}/course-progress/#{course}")
+    end
+
+    # Crete Course User
+    def create_user_course(user, course)
+      user = user_id(user) || raise('expected a user')
+      course = course_id(course) || raise('expected a course')
+
+      response = post("/ldlms/v2/sfwd-courses/#{course}/users", user_ids: [user])
+
+      unless (response.first.fetch(:code) rescue nil) == 'learndash_rest_enroll_success'
+        raise("unsuccessful course creation: #{response}")
+      end
+
+      find_user_course(user, course)
     end
 
     private
@@ -77,8 +117,20 @@ module Effective
     def user_id(resource)
       if resource.class.respond_to?(:effective_learndash_owner?) # This is a user
         resource.learndash_user&.user_id
+      elsif resource.kind_of?(LearndashEnrollment)
+        resource.learndash_user&.user_id
       elsif resource.kind_of?(LearndashUser)
         resource.user_id
+      else
+        resource
+      end
+    end
+
+    def course_id(resource)
+      if resource.kind_of?(LearndashCourse)
+        resource.course_id
+      elsif resource.kind_of?(LearndashEnrollment)
+        resource.learndash_course&.course_id
       else
         resource
       end
@@ -96,7 +148,7 @@ module Effective
       elsif response.kind_of?(Array)
         response.first
       else
-        raise("unexpected Learndash API response #{respone}")
+        raise("unexpected Learndash API response #{response}")
       end
     end
 

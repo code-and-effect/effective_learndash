@@ -1,7 +1,10 @@
 module Effective
   class LearndashCourse < ActiveRecord::Base
-    effective_resource do
 
+    has_many :learndash_enrollments
+    has_many :learndash_users, through: :learndash_enrollments
+
+    effective_resource do
       # This user the wordpress credentials
       course_id                 :integer
       status                    :string
@@ -24,7 +27,6 @@ module Effective
     # Syncs all courses
     def self.sync!
       api = EffectiveLearndash.api
-
       courses = all()
 
       api.courses.each do |data|
@@ -36,8 +38,6 @@ module Effective
           status: data[:status],
           link: data[:link]
         )
-
-        course
       end
 
       true

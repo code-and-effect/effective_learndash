@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "learndash_progresses", force: :cascade do |t|
+  create_table "learndash_enrollments", force: :cascade do |t|
     t.integer "owner_id"
     t.string "owner_type"
     t.integer "learndash_course_id"

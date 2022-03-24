@@ -22,12 +22,14 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
     t.timestamps
   end
 
-  create_table :learndash_progresses do |t|
+  create_table :learndash_enrollments do |t|
     t.integer :owner_id
     t.string :owner_type
 
     t.integer :learndash_course_id
     t.integer :learndash_user_id
+
+    t.datetime :last_synced_at
 
     # Wordpress
     t.string :progress_status
@@ -41,4 +43,5 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
 
     t.timestamps
   end
+
 end

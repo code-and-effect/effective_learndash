@@ -1,5 +1,5 @@
 module Admin
-  class LearndashProgressesController < ApplicationController
+  class LearndashEnrollmentsController < ApplicationController
     before_action(:authenticate_user!) if defined?(Devise)
     before_action { EffectiveResources.authorize!(self, :admin, :effective_learndash) }
 

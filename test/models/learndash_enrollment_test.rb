@@ -11,7 +11,7 @@ class LearndashEnrollmentTest < ActiveSupport::TestCase
 
     # Create a User
     user = build_unique_user()
-    learndash_user = user.find_or_create_learndash_user()
+    learndash_user = user.create_learndash_user()
 
     # Make sure no enrollment already exists
     assert api.find_user_course(learndash_user, learndash_course).blank?

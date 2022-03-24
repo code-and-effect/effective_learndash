@@ -3,7 +3,7 @@ require 'test_helper'
 class LearndashOwnerTest < ActiveSupport::TestCase
 
   # This creates a user on wordpress
-  test 'find_or_create_learndash_user' do
+  test 'create_learndash_user' do
     api = EffectiveLearndash.api
     user = build_unique_user()
 
@@ -12,7 +12,7 @@ class LearndashOwnerTest < ActiveSupport::TestCase
 
     assert user.learndash_user.blank?
 
-    learndash_user = user.find_or_create_learndash_user()
+    learndash_user = user.create_learndash_user()
     assert learndash_user.present?
 
     assert learndash_user.kind_of?(Effective::LearndashUser)

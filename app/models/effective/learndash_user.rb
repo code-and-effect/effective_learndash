@@ -46,10 +46,19 @@ module Effective
       save!
     end
 
+    def create_enrollment(course:)
+      enrollment = build_enrollment(course: course)
+      enrollment.save!
+      enrollment
+    end
+
+    def enrollment(course:)
+      learndash_enrollments.find { |enrollment| enrollment.learndash_course_id == course.id }
+    end
+
     # Find or build
-    def build_enrollment(learndash_course:)
-      learndash_enrollments.find { |enrollment| enrollment.learndash_course_id == learndash_course.id } ||
-      learndash_enrollments.build(learndash_course: learndash_course)
+    def build_enrollment(course:)
+      enrollment(course: course) || learndash_enrollments.build(learndash_course: course)
     end
 
     def assign_api_attributes(data = nil)
@@ -70,7 +79,7 @@ module Effective
         course = courses.find { |course| course.course_id == data[:course] }
         raise("unable to find local persisted learndash course for id #{data[:course]}. Run Effective::LearndashCourse.sync!") unless course.present?
 
-        enrollment = build_enrollment(learndash_course: course)
+        enrollment = build_enrollment(course: course)
         enrollment.assign_api_attributes(data)
       end
 

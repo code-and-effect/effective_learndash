@@ -25,8 +25,31 @@ module EffectiveLearndashOwner
     learndash_users.first
   end
 
-  def find_or_create_learndash_user
+  # Find or create
+  def create_learndash_user
     learndash_user || create_learndash_user!
+  end
+
+  # Find or create
+  def create_learndash_enrollment(course:)
+    raise('expected a persisted learndash_user') unless learndash_user&.persisted?
+    learndash_user.create_enrollment(course: course)
+  end
+
+  def learndash_enrollment(course:)
+    learndash_user&.enrollment(course: course)
+  end
+
+  def completed_learndash_course?(course:)
+    enrollment = learndash_enrollment(course: course)
+    return false if enrollment.blank?
+
+    return true if enrollment.completed?
+
+    # Check the API
+    enrollment.sync!
+
+    enrollment.completed?
   end
 
   private

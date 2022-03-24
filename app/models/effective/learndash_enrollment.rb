@@ -37,6 +37,10 @@ module Effective
       persisted? ? "#{learndash_user} #{learndash_course}" : 'learndash enrollment'
     end
 
+    def completed?
+      progress_status == 'completed'
+    end
+
     def sync!
       assign_api_attributes
       save!

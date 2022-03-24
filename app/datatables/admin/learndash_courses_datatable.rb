@@ -2,8 +2,8 @@ module Admin
   class EffectiveLearndashCoursesDatatable < Effective::Datatable
     datatable do
       col :id, visible: false
+      col :course_id, label: 'LearnDash Id', visible: false
 
-      col :course_id, label: 'Wordpress Id'
       col :title
       col :status
 

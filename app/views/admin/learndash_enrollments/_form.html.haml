@@ -3,7 +3,8 @@
   = f.hidden_field :learndash_user_id
 
   - unless inline_datatable? && inline_datatable.attributes[:learndash_course_id].present?
-    = f.select :learndash_course_id, Effective::LearndashCourse.all.deep.sorted
+    - collection = Effective::LearndashCourse.all.deep.sorted.where.not(id: f.object.learndash_user&.learndash_courses)
+    = f.select :learndash_course_id, collection
 
   - unless inline_datatable? && inline_datatable.attributes[:learndash_user_id].present?
     = f.select :learndash_user_id, Effective::LearndashUser.all.deep.sorted

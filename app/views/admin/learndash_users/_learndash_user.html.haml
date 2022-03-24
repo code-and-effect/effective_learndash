@@ -9,7 +9,7 @@
     %li Password: #{learndash_user.password}
 
   - if Rails.env.development?
-    %p= link_to "Wordpress Admin for #{learndash_user}", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
+    %p= link_to "LearnDash Admin for #{learndash_user}", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
 
 %h3 Learndash Course Enrollments
 - datatable = Admin::EffectiveLearndashEnrollmentsDatatable.new(learndash_user: learndash_user)

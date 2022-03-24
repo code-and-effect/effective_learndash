@@ -2,14 +2,13 @@ module Admin
   class EffectiveLearndashUsersDatatable < Effective::Datatable
     datatable do
       col :id, visible: false
-      col :owner
+      col :user_id, label: 'LearnDash Id', visible: false
 
-      col :user_id, label: 'Wordpress Id'
+      col :owner
       col :email
       col :username
       col :password
-
-      col :learndash_courses
+      col :learndash_courses, label: 'LearnDash Courses'
 
       actions_col
     end

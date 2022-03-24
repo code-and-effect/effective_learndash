@@ -8,7 +8,9 @@ EffectiveLearndash::Engine.routes.draw do
   namespace :admin do
     get '/learndash', to: 'learndash#index', as: :learndash
 
-    resources :learndash_users, only: [:index, :show, :new, :create]
+    resources :learndash_users, only: [:index, :show, :new, :create, :update] do
+      post :sync, on: :member
+    end
 
     resources :learndash_enrollments, only: [:index, :new, :create, :update] do
       post :sync, on: :member

@@ -1,17 +1,5 @@
--# - owner.find_or_create_learndash_user
+- if owner.learndash_user.blank?
+  %p #{owner} does not yet have an account on LearnDash.
 
-= card('LearnDash User') do
-
-  - if owner.learndash_user.blank?
-    %p #{owner} does not yet have an account on LearnDash.
-
-  - if owner.learndash_user.present?
-
-    %p #{owner} has an existing account on LearnDash.
-
-    %ul
-      %li Email: #{owner.email}
-      %li Username: #{owner.learndash_user.username}
-      %li Password: #{owner.learndash_user.password}
-
-    %p= link_to "LearnDash #{owner.learndash_user}", EffectiveLearndash.learndash_url
+- if owner.learndash_user.present?
+  = render('admin/learndash_users/learndash_user', learndash_user: owner.learndash_user)

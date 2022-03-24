@@ -76,9 +76,10 @@ module Effective
     end
 
     # List User Course Progress
-    def user_course_progresses(user)
-      id = user_id(user)
-      get("/ldlms/v2/users/#{id}/course-progress")
+    def user_enrollments(user)
+      user = user_id(user) || raise('expected a user')
+
+      get("/ldlms/v2/users/#{user}/course-progress")
     end
 
     # Helper methods for enrollments

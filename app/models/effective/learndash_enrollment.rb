@@ -29,7 +29,7 @@ module Effective
 
     validates :learndash_user_id, uniqueness: { scope: :learndash_course_id, message: 'already enrolled in this course' }
 
-    validate(if: -> { learndash_user.present? && learndash_course.present? && errors.blank? }) do
+    validate(if: -> { last_synced_at.blank? && learndash_user.present? && learndash_course.present? && errors.blank? }) do
       assign_api_attributes
     end
 
@@ -38,17 +38,12 @@ module Effective
     end
 
     def sync!
-      assign_api_attributes; save!
+      assign_api_attributes
+      save!
     end
 
-    private
-
-    def learndash_api
-      @learndash_api ||= EffectiveLearndash.api
-    end
-
-    def assign_api_attributes
-      data = learndash_api.find_enrollment(self) || learndash_api.create_enrollment(self)
+    def assign_api_attributes(data = nil)
+      data ||= learndash_api.find_enrollment(self) || learndash_api.create_enrollment(self)
 
       assign_attributes(
         last_synced_at: Time.zone.now,
@@ -56,9 +51,15 @@ module Effective
         last_step: data[:last_step],
         steps_completed: data[:steps_completed],
         steps_total: data[:steps_total],
-        date_started: data[:date_started],
-        date_completed: data[:date_completed]
+        date_started: Time.use_zone('UTC') { Time.zone.parse(data[:date_started]) },
+        date_completed: (Time.use_zone('UTC') { Time.zone.parse(data[:date_completed]) } if data[:date_completed].present?)
       )
+    end
+
+    private
+
+    def learndash_api
+      @learndash_api ||= EffectiveLearndash.api
     end
 
   end

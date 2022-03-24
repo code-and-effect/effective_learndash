@@ -3,6 +3,8 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
     t.integer :owner_id
     t.string :owner_type
 
+    t.datetime :last_synced_at
+
     # Wordpress
     t.integer   :user_id
     t.string    :email

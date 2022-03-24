@@ -26,18 +26,11 @@ module Effective
 
     # Syncs all courses
     def self.sync!
-      api = EffectiveLearndash.api
       courses = all()
 
-      api.courses.each do |data|
+      EffectiveLearndash.api.courses.each do |data|
         course = courses.find { |course| course.course_id == data[:id] } || new()
-
-        course.update!(
-          course_id: data[:id],
-          title: data.dig(:title, :rendered),
-          status: data[:status],
-          link: data[:link]
-        )
+        course.update!(course_id: data[:id], title: data.dig(:title, :rendered), status: data[:status], link: data[:link])
       end
 
       true

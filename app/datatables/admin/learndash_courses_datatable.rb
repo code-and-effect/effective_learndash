@@ -6,12 +6,14 @@ module Admin
       col :course_id, label: 'Wordpress Id'
       col :title
       col :status
-      col :link
 
-      actions_col do |course|
-        dropdown_link_to 'View Course', course.link, target: '_blank'
+      col :link do |course|
+        link_to(course.link, course.link, target: '_blank')
       end
 
+      col :learndash_users
+
+      actions_col
     end
 
     collection do

@@ -1,25 +1,16 @@
-= card('Learndash User') do
-  %table.table.table-sm
-    %tr
-      %td Owner
-      %td= link_to(learndash_user.owner, "/admin/users/#{learndash_user.owner.to_param}/edit")
+= card('LearnDash User') do
+  %p
+    = link_to(learndash_user.owner, "/admin/users/#{learndash_user.owner.to_param}/edit")
+    has an existing account on LearnDash.
 
-    %tr
-      %td Wordpress Id
-      %td= learndash_user.user_id
+  %ul
+    %li Email: #{learndash_user.email}
+    %li Username: #{learndash_user.username}
+    %li Password: #{learndash_user.password}
 
-    %tr
-      %td Email
-      %td= learndash_user.email
+  - if Rails.env.development?
+    %p= link_to "Wordpress Admin for #{learndash_user}", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
 
-    %tr
-      %td Username
-      %td= learndash_user.username
-
-    %tr
-      %td Password
-      %td= learndash_user.password
-
-    %tr
-      %td Url
-      %td= link_to "LearnDash", EffectiveLearndash.learndash_url
+%h3 Learndash Course Enrollments
+- datatable = Admin::EffectiveLearndashEnrollmentsDatatable.new(learndash_user: learndash_user)
+= render_datatable(datatable, inline: true)

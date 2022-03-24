@@ -6,10 +6,7 @@ module Admin
       col :last_synced_at
       col :owner, visible: false
       col :learndash_course, label: 'LearnDash Course'
-
-      col :learndash_user, label: 'LearnDash User' do |enrollment|
-        link_to(enrollment.owner, "/admin/users/#{enrollment.owner.to_param}/edit", target: '_blank')
-      end
+      col :learndash_user, label: 'LearnDash User'
 
       col :progress_status
       col :last_step, visible: false

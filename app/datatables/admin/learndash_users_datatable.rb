@@ -9,6 +9,8 @@ module Admin
       col :username
       col :password
 
+      col :learndash_courses
+
       actions_col
     end
 

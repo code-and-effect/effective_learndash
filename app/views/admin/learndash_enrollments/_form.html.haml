@@ -1,5 +1,11 @@
 = effective_form_with(model: [:admin, learndash_enrollment], engine: true) do |f|
-  = f.select :learndash_course_id, Effective::LearndashCourse.all.deep.sorted
-  = f.select :learndash_user_id, Effective::LearndashUser.all.deep.sorted
+  = f.hidden_field :learndash_course_id
+  = f.hidden_field :learndash_user_id
+
+  - unless inline_datatable? && inline_datatable.attributes[:learndash_course_id].present?
+    = f.select :learndash_course_id, Effective::LearndashCourse.all.deep.sorted
+
+  - unless inline_datatable? && inline_datatable.attributes[:learndash_user_id].present?
+    = f.select :learndash_user_id, Effective::LearndashUser.all.deep.sorted
 
   = f.submit

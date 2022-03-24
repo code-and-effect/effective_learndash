@@ -4,8 +4,13 @@ module Effective
     log_changes(to: :owner) if respond_to?(:log_changes)
 
     has_many :learndash_enrollments
+    accepts_nested_attributes_for :learndash_enrollments
+
+    has_many :learndash_courses, through: :learndash_enrollments
 
     effective_resource do
+      last_synced_at            :string
+
       # This user the wordpress credentials
       user_id                   :integer
       email                     :string
@@ -23,7 +28,7 @@ module Effective
       self.errors.add(:owner, "already exists") if self.class.where(owner: owner).exists?
     end
 
-    validate(if: -> { owner.present? && owner.persisted? && errors.blank? }) do
+    validate(if: -> { last_synced_at.blank? && owner.present? && errors.blank? }) do
       assign_api_attributes
     end
 
@@ -37,22 +42,45 @@ module Effective
     end
 
     def sync!
-      assign_api_attributes; save!
+      assign_api_course_enrollments
+      save!
+    end
+
+    # Find or build
+    def build_enrollment(learndash_course:)
+      learndash_enrollments.find { |enrollment| enrollment.learndash_course_id == learndash_course.id } ||
+      learndash_enrollments.build(learndash_course: learndash_course)
+    end
+
+    def assign_api_attributes(data = nil)
+      data ||= learndash_api.find_user(owner) || learndash_api.create_user(owner)
+
+      # Take special care not to overwrite password. We only get password once.
+      self.password ||= (data[:password].presence || 'unknown')
+
+      assign_attributes(email: data[:email], user_id: data[:id], username: data[:username], last_synced_at: Time.zone.now)
+    end
+
+    def assign_api_course_enrollments
+      raise('must be persisted') unless persisted?
+
+      courses = Effective::LearndashCourse.all()
+
+      learndash_api.user_enrollments(self).each do |data|
+        course = courses.find { |course| course.course_id == data[:course] }
+        raise("unable to find local persisted learndash course for id #{data[:course]}. Run Effective::LearndashCourse.sync!") unless course.present?
+
+        enrollment = build_enrollment(learndash_course: course)
+        enrollment.assign_api_attributes(data)
+      end
+
+      assign_attributes(last_synced_at: Time.zone.now)
     end
 
     private
 
     def learndash_api
       @learndash_api ||= EffectiveLearndash.api
-    end
-
-    def assign_api_attributes
-      data = learndash_api.find_user(owner) || learndash_api.create_user(owner)
-
-      # Take special care not to overwrite password. We only get password once.
-      self.password ||= (data[:password].presence || 'unknown')
-
-      assign_attributes(email: data[:email], user_id: data[:id], username: data[:username])
     end
 
   end

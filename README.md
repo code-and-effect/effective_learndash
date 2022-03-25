@@ -39,15 +39,28 @@ Then migrate the database:
 rake db:migrate
 ```
 
+Add to your user class:
+
 ```
+class User < ApplicationRecord
+  effective_learndash_owner
+end
+```
+
 Add a link to the admin menu:
 
 ```haml
 - if can? :admin, :effective_learndash
-  = nav_link_to 'Learndash', effective_learndash.admin_learndash_path
-```
+  = nav_dropdown 'Learndash' do
+    - if can? :index, Effective::LearndashUser
+      = nav_link_to 'Learndash Users', effective_learndash.admin_learndash_users_path
 
-and visit `/admin/learndash`.
+    - if can? :index, Effective::LearndashCourse
+      = nav_link_to 'Learndash Courses', effective_learndash.admin_learndash_courses_path
+
+    - if can? :index, Effective::LearndashEnrollment
+      = nav_link_to 'Learndash Enrollments', effective_learndash.admin_learndash_enrollments_path
+```
 
 ## Authorization
 
@@ -60,6 +73,12 @@ The permissions you actually want to define are as follows (using CanCan):
 ```ruby
 if user.admin?
   can :admin, :effective_learndash
+
+  can(crud + [:refresh], Effective::LearndashUser)
+  can(crud + [:refresh], Effective::LearndashCourse)
+
+  can(crud, Effective::LearndashEnrollment)
+  can(:refresh, Effective::LearndashEnrollment) { |enrollment| !enrollment.completed? }
 end
 ```
 
@@ -72,6 +91,20 @@ Please generate an application password via:
 https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/
 
 and fill in the username/password details in config/initializers/effective_leardash.rb
+
+## Working with Learndash
+
+Visit `/admin/learndash_courses` and Refresh the list of Courses.
+
+Create a New Learndash User will create a new Wordpress/Learndash account with a username/password according to the settings in the config file.
+
+When you create a user, you only get access to the password once. So any existing users will have an unknown password.
+
+Create a new Learndash Enrollment to enroll a learndash user into a course. This will begin tracking their progress.
+
+There are no webhooks or callbacks from Learndash, everything is a GET request that updates the local database.
+
+You can refresh an entire learndash user in one operation and it will sync the entire user at once, `user.learndash_user.refresh!`
 
 ## License
 

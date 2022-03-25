@@ -46,6 +46,14 @@ module Effective
       persisted? ? "#{learndash_user} #{learndash_course}" : 'learndash enrollment'
     end
 
+    def not_started?
+      progress_status == 'not-started'
+    end
+
+    def in_progress?
+      progress_status == 'in-progress'
+    end
+
     def completed?
       progress_status == 'completed'
     end

@@ -71,6 +71,9 @@ All authorization checks are handled via the effective_resources gem found in th
 The permissions you actually want to define are as follows (using CanCan):
 
 ```ruby
+can(:show, Effective::LearndashUser) { |lduser| lduser.owner_id == user.id }
+can(:index, Effective::LearndashEnrollment)
+
 if user.admin?
   can :admin, :effective_learndash
 

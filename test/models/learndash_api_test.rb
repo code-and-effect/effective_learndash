@@ -41,32 +41,35 @@ class LearndashApiTest < ActiveSupport::TestCase
   test 'find user' do
     api = EffectiveLearndash.api
 
-    # response = api.find_user(999999)
-    # assert response.blank?
+    response = api.find_user(999999)
+    assert response.blank?
 
-    # response = api.find_user('test@nope.com')
-    # assert response.blank?
+    response = api.find_user('test@nope.com')
+    assert response.blank?
 
     response = api.find_user(User.new(email: 'test@nope.com'))
     assert response.blank?
   end
 
   # This creates a user on wordpress
-  # test 'create user' do
-  #   api = EffectiveLearndash.api
-  #   user = build_unique_user()
+  test 'create user' do
+    api = EffectiveLearndash.api
+    user = build_unique_user()
 
-  #   response = api.find_user(user)
-  #   assert response.blank?
+    response = api.find_user(user)
+    assert response.blank?
 
-  #   response = api.create_user(user)
-  #   assert response.present?
+    response = api.create_user(user)
+    assert response.present?
 
-  #   assert_equal user.email, response[:email]
-  #   assert_equal user.first_name, response[:first_name]
-  #   assert_equal user.last_name, response[:last_name]
+    assert_equal user.email, response[:email]
+    assert_equal user.first_name, response[:first_name]
+    assert_equal user.last_name, response[:last_name]
 
-  #   assert response[:password].present?
-  #   assert_equal ['subscriber'], response[:roles]
-  # end
+    assert response[:password].present?
+    assert_equal ['subscriber'], response[:roles]
+
+    response = api.find_user(user)
+    assert response.present?
+  end
 end

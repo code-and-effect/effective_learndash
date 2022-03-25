@@ -1,6 +1,5 @@
 module Effective
   class LearndashCourse < ActiveRecord::Base
-
     has_many :learndash_enrollments
     has_many :learndash_users, through: :learndash_enrollments
 

@@ -30,23 +30,23 @@ module Effective
     def find_user(value)
       # Find by email
       if value.kind_of?(String) && value.include?('@')
-        return find("/wp/v2/users", context: :edit, search: value)
+        return find_by("/wp/v2/users", :email, value)
       end
 
-      # Find by param value
+      # Fetch by saved param value
       user_id = user_id(value)
       user = find("/wp/v2/users/#{user_id}", context: :edit) if user_id
       return user if user.present?
 
       # Find by email
       email = value.try(:email)
-      user = find("/wp/v2/users", context: :edit, search: email) if email
+      user = find_by("/wp/v2/users", :email, email) if email
       return user if user.present?
 
       # Find by username
       username = username_for(value) if value.class.respond_to?(:effective_learndash_owner?)
-      user = find("/wp/v2/users", context: :edit, search: username) if username
-      return user if username.present?
+      user = find_by("/wp/v2/users", :username, username) if username
+      return user if user.present?
 
       # Otherwise none
       nil
@@ -119,7 +119,8 @@ module Effective
       find_user_course(user, course)
     end
 
-    private
+    # private under this point
+
 
     def user_id(resource)
       if resource.class.respond_to?(:effective_learndash_owner?) # This is a user
@@ -170,6 +171,31 @@ module Effective
       else
         raise("unexpected Learndash API response #{response}")
       end
+    end
+
+    # We can't just like, find by email, so we gotta search then filter on our side
+    def find_by(endpoint, key, value)
+      raise('expected a symbol key') unless key.kind_of?(Symbol)
+      raise('expected a value') unless value.present?
+
+      response = get(endpoint, { search: value, context: :edit })
+
+      collection = Array(
+        if response == false
+          nil
+        elsif response.kind_of?(Hash) && response.dig(:data, :status) == 404
+          nil
+        elsif response.kind_of?(Hash)
+          response
+        elsif response.kind_of?(Array)
+          response
+        else
+          raise("unexpected Learndash API find_by response #{response}")
+        end
+      )
+
+      resource = collection.find { |data| data[key] == value }
+      resource
     end
 
     def get(endpoint, params = nil)

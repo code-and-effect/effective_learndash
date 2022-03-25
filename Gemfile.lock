@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    effective_learndash (0.0.1)
+    effective_learndash (0.1.0)
       effective_bootstrap
       effective_datatables
       effective_resources

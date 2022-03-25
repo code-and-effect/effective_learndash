@@ -1,3 +1,6 @@
 = effective_form_with(model: [:admin, learndash_user], engine: true) do |f|
-  = f.select :owner, {'Owners' => current_user.class.sorted }, polymorphic: true
+
+  = f.select :owner, {'Owners' => current_user.class.sorted }, polymorphic: true,
+    hint: 'Create a Learndash user account for this website user'
+
   = f.submit

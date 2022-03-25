@@ -6,7 +6,7 @@ class LearndashEnrollmentTest < ActiveSupport::TestCase
     api = EffectiveLearndash.api
 
     # Load Existing Courses
-    Effective::LearndashCourse.sync!
+    Effective::LearndashCourse.refresh!
     learndash_course = Effective::LearndashCourse.where(title: 'Test Course').first!
 
     # Create a User

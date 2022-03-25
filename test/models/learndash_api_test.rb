@@ -41,11 +41,11 @@ class LearndashApiTest < ActiveSupport::TestCase
   test 'find user' do
     api = EffectiveLearndash.api
 
-    response = api.find_user(999999)
-    assert response.blank?
+    # response = api.find_user(999999)
+    # assert response.blank?
 
-    response = api.find_user('test@nope.com')
-    assert response.blank?
+    # response = api.find_user('test@nope.com')
+    # assert response.blank?
 
     response = api.find_user(User.new(email: 'test@nope.com'))
     assert response.blank?

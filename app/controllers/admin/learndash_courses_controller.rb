@@ -5,11 +5,9 @@ module Admin
 
     include Effective::CrudController
 
-    def sync
-      resource_scope.sync!
-
-      flash[:success] = "Successfully updated Courses from LearnDash"
-
+    def refresh
+      resource_scope.refresh!
+      flash[:success] = "Successfully refreshed Courses from Learndash"
       redirect_to effective_learndash.admin_learndash_courses_path
     end
 

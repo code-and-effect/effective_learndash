@@ -14,18 +14,14 @@ module Effective
     end
 
     scope :deep, -> { all }
-    scope :sorted, -> { order(:id) }
+    scope :sorted, -> { order(:title) }
 
     validates :course_id, presence: true
     validates :status, presence: true
     validates :title, presence: true
 
-    def to_s
-      title.presence || 'learndash course'
-    end
-
     # Syncs all courses
-    def self.sync!
+    def self.refresh!
       courses = all()
 
       EffectiveLearndash.api.courses.each do |data|
@@ -34,6 +30,10 @@ module Effective
       end
 
       true
+    end
+
+    def to_s
+      title.presence || 'learndash course'
     end
 
   end

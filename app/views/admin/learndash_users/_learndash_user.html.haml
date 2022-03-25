@@ -1,16 +1,21 @@
-= card('LearnDash User') do
+= card('Learndash User') do
   %p
     = link_to(learndash_user.owner, "/admin/users/#{learndash_user.owner.to_param}/edit")
-    has an existing account on LearnDash.
+    has an existing account on Learndash.
 
   %ul
     %li Email: #{learndash_user.email}
     %li Username: #{learndash_user.username}
     %li Password: #{learndash_user.password}
 
-  - if Rails.env.development?
-    %p= link_to "LearnDash Admin for #{learndash_user}", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
+  %p= link_to "Learndash LMS User Admin", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
+
+  %p
+    %small Last refreshed #{time_ago_in_words(learndash_user.last_synced_at)} ago.
 
 %h3 Learndash Course Enrollments
+
+%p Click the New button from the below table to manually enroll this user into a new course.
+
 - datatable = Admin::EffectiveLearndashEnrollmentsDatatable.new(learndash_user: learndash_user)
 = render_datatable(datatable, inline: true)

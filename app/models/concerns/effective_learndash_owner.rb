@@ -19,15 +19,25 @@ module EffectiveLearndashOwner
     # Effective Scoped - this is a has_one in preactice
     has_many :learndash_users, class_name: 'Effective::LearndashUser', as: :owner, inverse_of: :owner, dependent: :delete_all
     accepts_nested_attributes_for :learndash_users, allow_destroy: true
+
+    # Not used
+    has_many :learndash_enrollments, class_name: 'Effective::LearndashEnrollment', as: :owner, inverse_of: :owner, dependent: :delete_all
+    accepts_nested_attributes_for :learndash_enrollments, allow_destroy: true
   end
 
+  # Find
   def learndash_user
     learndash_users.first
   end
 
   # Find or create
   def create_learndash_user
-    learndash_user || create_learndash_user!
+    learndash_user || learndash_users.create!(owner: self)
+  end
+
+  # Find
+  def learndash_enrollment(course:)
+    learndash_user&.enrollment(course: course)
   end
 
   # Find or create
@@ -36,27 +46,19 @@ module EffectiveLearndashOwner
     learndash_user.create_enrollment(course: course)
   end
 
-  def learndash_enrollment(course:)
-    learndash_user&.enrollment(course: course)
-  end
-
-  def completed_learndash_course?(course:)
+  # Find or sync and check completed?
+  def learndash_completed?(course:)
     enrollment = learndash_enrollment(course: course)
+
+    # We haven't been enrolled
     return false if enrollment.blank?
 
+    # Return completed right away if previously marked completed
     return true if enrollment.completed?
 
     # Check the API
     enrollment.sync!
-
     enrollment.completed?
-  end
-
-  private
-
-  def create_learndash_user!
-    raise('must be persisted to create a learndash user') unless persisted?
-    learndash_users.create!(owner: self)
   end
 
 end

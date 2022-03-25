@@ -9,15 +9,15 @@ EffectiveLearndash::Engine.routes.draw do
     get '/learndash', to: 'learndash#index', as: :learndash
 
     resources :learndash_users, only: [:index, :show, :new, :create, :update] do
-      post :sync, on: :member
+      post :refresh, on: :member
     end
 
     resources :learndash_enrollments, only: [:index, :new, :create, :update] do
-      post :sync, on: :member
+      post :refresh, on: :member
     end
 
-    resources :learndash_courses, only: [:index] do
-      get :sync, on: :collection
+    resources :learndash_courses, only: [:index, :show, :update] do
+      get :refresh, on: :collection
     end
 
   end

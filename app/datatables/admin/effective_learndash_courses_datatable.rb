@@ -1,8 +1,10 @@
 module Admin
   class EffectiveLearndashCoursesDatatable < Effective::Datatable
     datatable do
+      order :title
+
       col :id, visible: false
-      col :course_id, label: 'LearnDash Id', visible: false
+      col :course_id, label: 'Learndash Id', visible: false
 
       col :title
       col :status
@@ -11,7 +13,7 @@ module Admin
         link_to(course.link, course.link, target: '_blank')
       end
 
-      col :learndash_users
+      col :learndash_users, visible: false
 
       actions_col
     end

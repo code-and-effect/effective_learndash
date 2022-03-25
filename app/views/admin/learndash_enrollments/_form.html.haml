@@ -2,11 +2,15 @@
   = f.hidden_field :learndash_course_id
   = f.hidden_field :learndash_user_id
 
-  - unless inline_datatable? && inline_datatable.attributes[:learndash_course_id].present?
-    - collection = Effective::LearndashCourse.all.deep.sorted.where.not(id: f.object.learndash_user&.learndash_courses)
-    = f.select :learndash_course_id, collection
+  - if inline_datatable?
+    - if inline_datatable.attributes[:learndash_course_id].blank?
+      - collection = Effective::LearndashCourse.all.deep.sorted.where.not(id: f.object.learndash_user&.learndash_courses)
+      = f.select :learndash_course_id, collection
 
-  - unless inline_datatable? && inline_datatable.attributes[:learndash_user_id].present?
+    - if inline_datatable.attributes[:learndash_user_id].blank?
+      = f.select :learndash_user_id, Effective::LearndashUser.all.deep.sorted
+  - else
+    = f.select :learndash_course_id,  Effective::LearndashCourse.all.deep.sorted
     = f.select :learndash_user_id, Effective::LearndashUser.all.deep.sorted
 
   = f.submit

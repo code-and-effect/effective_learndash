@@ -14,5 +14,5 @@ EffectiveLearndash.setup do |config|
   # Customize the method used to assign Wordpress username and passwords
   # Usernames can only contain lowercase letters (a-z) and numbers.
   # config.wp_username = Proc.new { |user| "user#{user.id}" }
-  # config.wp_password = Proc.new { |user| "password#{user.id}" }
+  # config.wp_password = Proc.new { |user| SecureRandom.base64(12) }
 end

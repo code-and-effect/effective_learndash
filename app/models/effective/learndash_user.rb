@@ -28,30 +28,28 @@ module Effective
       self.errors.add(:owner, "already exists") if self.class.where(owner: owner).exists?
     end
 
+    # First time sync only for creating a new user from the form
     validate(if: -> { last_synced_at.blank? && owner.present? && errors.blank? }) do
       assign_api_attributes
     end
 
-    validates :user_id, presence: true
-    validates :email, presence: true
-    validates :username, presence: true
-    validates :password, presence: true
+    with_options(if: -> { last_synced_at.present? }) do
+      validates :user_id, presence: true
+      validates :email, presence: true
+      validates :username, presence: true
+      validates :password, presence: true
+    end
 
     def to_s
       owner&.to_s || username.presence || 'learndash user'
     end
 
-    def sync!
+    def refresh!
       assign_api_course_enrollments
       save!
     end
 
-    def create_enrollment(course:)
-      enrollment = build_enrollment(course: course)
-      enrollment.save!
-      enrollment
-    end
-
+    # Find
     def enrollment(course:)
       learndash_enrollments.find { |enrollment| enrollment.learndash_course_id == course.id }
     end
@@ -61,8 +59,16 @@ module Effective
       enrollment(course: course) || learndash_enrollments.build(learndash_course: course)
     end
 
+    # Create
+    def create_enrollment(course:)
+      enrollment = build_enrollment(course: course)
+      enrollment.save!
+      enrollment
+    end
+
+    # Assign my model attributes from API. These should never change.
     def assign_api_attributes(data = nil)
-      data ||= learndash_api.find_user(owner) || learndash_api.create_user(owner)
+      data ||= EffectiveLearndash.api.find_user(owner) || EffectiveLearndash.api.create_user(owner)
 
       # Take special care not to overwrite password. We only get password once.
       self.password ||= (data[:password].presence || 'unknown')
@@ -70,12 +76,13 @@ module Effective
       assign_attributes(email: data[:email], user_id: data[:id], username: data[:username], last_synced_at: Time.zone.now)
     end
 
+    # This synchronizes all the course enrollments from the API down locally.
     def assign_api_course_enrollments
       raise('must be persisted') unless persisted?
 
-      courses = Effective::LearndashCourse.all()
+      courses = LearndashCourse.all()
 
-      learndash_api.user_enrollments(self).each do |data|
+      EffectiveLearndash.api.user_enrollments(self).each do |data|
         course = courses.find { |course| course.course_id == data[:course] }
         raise("unable to find local persisted learndash course for id #{data[:course]}. Run Effective::LearndashCourse.sync!") unless course.present?
 
@@ -84,12 +91,6 @@ module Effective
       end
 
       assign_attributes(last_synced_at: Time.zone.now)
-    end
-
-    private
-
-    def learndash_api
-      @learndash_api ||= EffectiveLearndash.api
     end
 
   end

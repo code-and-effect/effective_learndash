@@ -26,6 +26,7 @@ module Effective
     end
 
     # Returns a WP Hash of User or nil
+    # This find by EMAIL doesn't work reliably
     def find_user(value)
       # Find by email
       if value.kind_of?(String) && value.include?('@')
@@ -42,6 +43,11 @@ module Effective
       user = find("/wp/v2/users", context: :edit, search: email) if email
       return user if user.present?
 
+      # Find by username
+      username = username_for(value) if value.class.respond_to?(:effective_learndash_owner?)
+      user = find("/wp/v2/users", context: :edit, search: username) if username
+      return user if username.present?
+
       # Otherwise none
       nil
     end
@@ -52,8 +58,8 @@ module Effective
       raise ('expected a leardash owner') unless owner.class.respond_to?(:effective_learndash_owner?)
       raise('owner must have an email') unless owner.try(:email).present?
 
-      username = EffectiveLearndash.wp_username_for(owner)
-      password = EffectiveLearndash.wp_password_for(owner)
+      username = username_for(owner)
+      password = password_for(owner)
 
       payload = {
         username: username,
@@ -135,6 +141,19 @@ module Effective
       else
         resource
       end
+    end
+
+    def username_for(resource)
+      raise('expected a learndash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
+
+      name = EffectiveLearndash.wp_username_for(resource)
+      name = "test#{name}" unless Rails.env.production?
+      name
+    end
+
+    def password_for(resource)
+      raise('expected a learndash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
+      EffectiveLearndash.wp_password_for(resource)
     end
 
     def find(endpoint, params = nil)

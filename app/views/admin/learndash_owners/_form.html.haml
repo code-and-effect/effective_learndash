@@ -1,5 +1,5 @@
 - if owner.learndash_user.blank?
-  %p #{owner} does not yet have an account on LearnDash.
+  %p #{owner} does not yet have an account on Learndash.
 
 - if owner.learndash_user.present?
   = render('admin/learndash_users/learndash_user', learndash_user: owner.learndash_user)

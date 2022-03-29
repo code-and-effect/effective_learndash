@@ -48,6 +48,7 @@ module Effective
     scope :deep, -> { all }
     scope :sorted, -> { order(:title) }
     scope :registerable, -> { where(can_register: true) }
+    scope :published, -> { all }
 
     scope :paginate, -> (page: nil, per_page: nil) {
       page = (page || 1).to_i
@@ -67,6 +68,7 @@ module Effective
         scope = scope.where(authenticate_user: false)
       end
 
+      # TODO
       # unless unpublished
       #   scope = scope.published
       # end
@@ -103,13 +105,9 @@ module Effective
       rich_text_body
     end
 
+    # Todo
     def draft?
       false
-    end
-
-    def purchasable?
-      return false if draft?
-      can_register?
     end
 
   end

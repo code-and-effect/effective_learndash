@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# This is a purchasable object and wizard that will create learndash enrollments
-# An admin can also just create learndash enrollments without a learndash access
+# This is the registrant as created by the course registration
+# It tracks who purchased which course for how much
 
 module Effective
   class CourseRegistrant < ActiveRecord::Base

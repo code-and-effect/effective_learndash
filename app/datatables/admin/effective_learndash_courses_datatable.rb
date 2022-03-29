@@ -15,7 +15,7 @@ module Admin
 
       col :learndash_users, visible: false
 
-      col :can_purchase
+      col :can_register
       col :regular_price, as: :price
       col :member_price, as: :price
 

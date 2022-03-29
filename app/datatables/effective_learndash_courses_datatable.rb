@@ -1,8 +1,8 @@
 # Dashboard Events
 class EffectiveLearndashCoursesDatatable < Effective::Datatable
   filters do
-    # Purchasable should be first here, so when displayed as a simple datatable on the dashboard they only see upcoming events
-    scope :purchasable
+    # Registerable should be first here, so when displayed as a simple datatable on the dashboard they only see upcoming events
+    scope :registerable
     scope :all
   end
 
@@ -16,7 +16,7 @@ class EffectiveLearndashCoursesDatatable < Effective::Datatable
 
     actions_col show: false do |learndash_course|
       if learndash_course.purchasable?
-        dropdown_link_to('Purchase', effective_learndash.new_learndash_course_course_purchase_wizard_path(learndash_course))
+        dropdown_link_to('Register', effective_learndash.new_learndash_course_course_registration_path(learndash_course))
       end
     end
   end

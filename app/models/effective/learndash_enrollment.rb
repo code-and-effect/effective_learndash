@@ -4,9 +4,7 @@ module Effective
     belongs_to :learndash_course
     belongs_to :learndash_user
 
-    belongs_to :course_purchase, optional: true
-
-    log_changes(to: :learndash_course) if respond_to?(:log_changes)
+    log_changes(to: :learndash_course, except: [:last_synced_at]) if respond_to?(:log_changes)
 
     PROGRESS_STATUSES = ['not-started', 'in-progress', 'completed']
 

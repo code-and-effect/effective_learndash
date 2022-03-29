@@ -1,0 +1,8 @@
+= render 'layout' do
+  = render 'effective/course_registrations/content', resource: resource
+
+  = render('effective/course_registrations/course_registration', course_registration: resource)
+
+  = effective_form_with(model: resource, url: wizard_path(step), method: :put) do |f|
+    = f.hidden_field :id
+    = f.submit 'Save and Continue', class: 'btn btn-primary'

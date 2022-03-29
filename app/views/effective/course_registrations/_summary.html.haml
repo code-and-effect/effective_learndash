@@ -1,0 +1,35 @@
+= card('Course Registration') do
+  %table.table.table-sm
+    %tbody
+      %tr
+        %th.border-0 Learndash Course
+        %td.border-0
+          %p= link_to(course_registration.course, EffectiveLearndash.learndash_url, target: '_blank')
+
+          %p Please sign into Learndash with the following credentials:
+          - learndash_user = course_registration.learndash_owner.learndash_user
+
+          %ul
+            %li Email: #{learndash_user.email}
+            %li Username: #{learndash_user.username}
+            %li Password: #{learndash_user.password}
+
+          %p= link_to('Learndash LMS', EffectiveLearndash.learndash_url, target: '_blank')
+
+      - if request.path.start_with?('/admin')
+        %tr
+          %th Registered by
+          %td
+            - url = (polymorphic_admin_path(course_registration.owner) rescue "/admin/users/#{course_registration.owner.to_param}/edit")
+            = link_to(course_registration.owner, url)
+      - else
+        %tr
+          %th Registered by
+          %td= course_registration.owner
+
+      - if course_registration.orders.present?
+        %tr
+          %th Order
+          %td
+            - course_registration.orders.each do |order|
+              = link_to(order, effective_orders.order_path(order))

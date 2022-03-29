@@ -12,7 +12,7 @@ module EffectiveLearndash
       :learndash_url, :learndash_username, :learndash_password,
       :wp_username, :wp_password,
       :layout, :per_page, :use_effective_roles,
-      :course_purchase_wizard_class_name
+      :course_registration_class_name
     ]
   end
 
@@ -50,8 +50,8 @@ module EffectiveLearndash
     owner.instance_exec(owner, &wp_password)
   end
 
-  def self.CoursePurchaseWizard
-    course_purchase_wizard_class_name&.constantize || Effective::CoursePurchaseWizard
+  def self.CourseRegistration
+    course_registration_class_name&.constantize || Effective::CourseRegistration
   end
 
 end

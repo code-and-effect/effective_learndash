@@ -7,9 +7,9 @@
 
   %hr
 
-  - enabled = EffectiveLearndash.CoursePurchaseWizard.all_wizard_steps
+  - enabled = EffectiveLearndash.CourseRegistration.all_wizard_steps
 
-  - EffectiveLearndash.CoursePurchaseWizard::WIZARD_STEPS.each do |step, title|
+  - EffectiveLearndash.CourseRegistration::WIZARD_STEPS.each do |step, title|
     - next unless enabled.include?(step)
 
     = card("#{title}") do

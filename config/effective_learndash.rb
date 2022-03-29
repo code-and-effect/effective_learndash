@@ -17,7 +17,7 @@ EffectiveLearndash.setup do |config|
   # config.wp_password = Proc.new { |user| SecureRandom.base64(12) }
 
   # Course Purchase Wizard Settings
-  # config.course_purchase_wizard_class_name = 'Effective::CoursePurchaseWizard'
+  # config.course_registration_class_name = 'Effective::CourseRegistration'
 
   # Pagination length on the Events#index page
   config.per_page = 10

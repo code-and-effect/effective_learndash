@@ -29,7 +29,7 @@ module Effective
       slug                   :string
 
       # For course purchases
-      can_purchase          :boolean
+      can_register           :boolean
 
       # Pricing
       regular_price         :integer
@@ -47,7 +47,7 @@ module Effective
 
     scope :deep, -> { all }
     scope :sorted, -> { order(:title) }
-    scope :purchasable, -> { where(can_purchase: true) }
+    scope :registerable, -> { where(can_register: true) }
 
     scope :paginate, -> (page: nil, per_page: nil) {
       page = (page || 1).to_i
@@ -78,7 +78,7 @@ module Effective
     validates :status, presence: true
     validates :title, presence: true
 
-    with_options(if: -> { can_purchase? }) do
+    with_options(if: -> { can_register? }) do
       validates :regular_price, presence: true
       validates :member_price, presence: true
     end
@@ -109,7 +109,7 @@ module Effective
 
     def purchasable?
       return false if draft?
-      can_purchase?
+      can_register?
     end
 
   end

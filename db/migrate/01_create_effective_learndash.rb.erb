@@ -29,7 +29,7 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
       t.boolean :authenticate_user, default: false
 
       # Course Purchases
-      t.boolean :can_purchase, default: false
+      t.boolean :can_register, default: false
 
       t.integer :regular_price
       t.integer :member_price
@@ -47,8 +47,6 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
       t.integer :learndash_course_id
       t.integer :learndash_user_id
 
-      t.integer :course_purchase_id
-
       t.datetime :last_synced_at
 
       # Wordpress
@@ -64,12 +62,12 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    create_table :course_purchases do |t|
+    create_table :course_registrants do |t|
       t.integer :owner_id
       t.string :owner_type
 
-      t.integer :course_purchase_wizard_id
-      t.string :course_purchase_wizard_type
+      t.integer :course_registration_id
+      t.string :course_registration_type
 
       t.integer :learndash_course_id
 
@@ -82,7 +80,7 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    create_table :course_purchase_wizards do |t|
+    create_table :course_registrations do |t|
       t.string :token
 
       t.integer :owner_id
@@ -107,9 +105,9 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
       t.datetime :created_at
     end
 
-    add_index :course_purchase_wizards, [:owner_id, :owner_type]
-    add_index :course_purchase_wizards, :status
-    add_index :course_purchase_wizards, :token
+    add_index :course_registrations, [:owner_id, :owner_type]
+    add_index :course_registrations, :status
+    add_index :course_registrations, :token
 
   end
 end

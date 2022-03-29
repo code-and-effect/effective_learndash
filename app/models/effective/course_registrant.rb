@@ -4,9 +4,8 @@
 # An admin can also just create learndash enrollments without a learndash access
 
 module Effective
-  class CoursePurchase < ActiveRecord::Base
+  class CourseRegistrant < ActiveRecord::Base
     acts_as_purchasable
-    acts_as_archived
 
     log_changes(to: :learndash_course) if respond_to?(:log_changes)
 
@@ -16,12 +15,10 @@ module Effective
     # Every course is charged to a owner
     belongs_to :owner, polymorphic: true
 
-    # When checked out through the learndash course purchase wizard
-    belongs_to :course_purchase_wizard, polymorphic: true, optional: true
+    # As checked out through the learndash course purchase wizard
+    belongs_to :course_registration, polymorphic: true
 
     effective_resource do
-      archived      :boolean
-
       # Acts as Purchasable
       price             :integer
       qb_item_name      :string
@@ -31,11 +28,11 @@ module Effective
     end
 
     scope :sorted, -> { order(:id) }
-    scope :deep, -> { includes(:learndash_course, :owner, :course_purchase_wizard) }
+    scope :deep, -> { includes(:learndash_course, :owner, :course_registration) }
 
-    before_validation(if: -> { course_purchase_wizard.present? }) do
-      self.learndash_course ||= course_purchase_wizard.learndash_course
-      self.owner ||= course_purchase_wizard.owner
+    before_validation(if: -> { course_registration.present? }) do
+      self.learndash_course ||= course_registration.learndash_course
+      self.owner ||= course_registration.owner
     end
 
     before_validation(if: -> { learndash_course.present? }) do
@@ -56,18 +53,6 @@ module Effective
 
     def qb_item_name
       learndash_course.qb_item_name
-    end
-
-    # This is the Admin Save and Mark Paid action
-    def mark_paid!
-      raise('expected a blank course purchase wizard') if course_purchase_wizard.present?
-
-      save!
-
-      order = Effective::Order.new(items: self, user: owner)
-      order.mark_as_purchased!
-
-      true
     end
 
   end

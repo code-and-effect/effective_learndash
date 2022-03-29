@@ -8,8 +8,8 @@ EffectiveLearndash::Engine.routes.draw do
   # Public routes
   scope module: 'effective' do
     resources :learndash_courses, only: [:index, :show] do
-      resources :course_purchase_wizards, only: [:new, :show, :destroy] do
-        resources :build, controller: :course_purchase_wizards, only: [:show, :update]
+      resources :course_registrations, only: [:new, :show, :destroy] do
+        resources :build, controller: :course_registrations, only: [:show, :update]
       end
     end
   end
@@ -29,9 +29,7 @@ EffectiveLearndash::Engine.routes.draw do
       get :refresh, on: :collection
     end
 
-    resources :course_purchases, only: [:index] do
-      post :archive, on: :member
-      post :unarchive, on: :member
-    end
+    resources :course_registrants, only: [:index]
+    resources :course_registrations, only: [:index, :show]
   end
 end

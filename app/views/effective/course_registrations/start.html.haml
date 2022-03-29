@@ -1,11 +1,11 @@
 = render 'layout' do
-  = render 'effective/course_purchase_wizards/content', resource: resource
+  = render 'effective/course_registrations/content', resource: resource
 
   .card
     .card-body
       %p Welcome #{current_user}!
 
-      %p You are registering for #{resource.learndash_course}.
+      %p You are registering for #{resource.course}.
 
       = effective_form_with(model: resource, url: wizard_path(step), method: :put) do |f|
         = f.hidden_field :id

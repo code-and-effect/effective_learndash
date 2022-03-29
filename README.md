@@ -74,6 +74,12 @@ The permissions you actually want to define are as follows (using CanCan):
 can(:show, Effective::LearndashUser) { |lduser| lduser.owner_id == user.id }
 can(:index, Effective::LearndashEnrollment)
 
+can([:index, :show], Effective::LearndashCourse) { |course| !course.draft? }
+can([:show, :index], Effective::CourseRegistrant) { |registrant| registrant.owner == user || registrant.owner.blank? }
+can([:new, :create], EffectiveLearndash.CourseRegistration)
+can([:show, :index], EffectiveLearndash.CourseRegistration) { |registration| registration.owner == user }
+can([:update, :destroy], EffectiveLearndash.CourseRegistration) { |registration| registration.owner == user && !registration.was_submitted? }
+
 if user.admin?
   can :admin, :effective_learndash
 

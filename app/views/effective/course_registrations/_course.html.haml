@@ -1,0 +1,9 @@
+= card do
+  .row
+    .col-sm
+      %h5.card-title= course_registration.wizard_step_title(:course)
+    .col-sm-auto.text-right
+      = link_to('Edit', wizard_path(:course)) if edit_effective_wizard?
+
+  - datatable = EffectiveCourseRegistrantsDatatable.new(course_registration: course_registration)
+  .mb-4= render_simple_datatable(datatable)

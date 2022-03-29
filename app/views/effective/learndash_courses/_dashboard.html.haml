@@ -1,9 +1,0 @@
-%h2 Courses
-
-- purchasable = Effective::LearndashCourse.learndash_courses(user: current_user).purchasable.count
-
-- datatable = EffectiveLearndashCoursesDatatable.new(self, namespace: :effective)
-= render_datatable(datatable, simple: true)
-
--# TODO enable view all events
-%p= link_to 'View All Courses', effective_learndash.learndash_courses_path, class: 'btn btn-primary'

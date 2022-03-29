@@ -15,7 +15,6 @@ module Admin
       end
 
       col :owner
-      col :course_purchase
       col :learndash_course
       col :learndash_user
 

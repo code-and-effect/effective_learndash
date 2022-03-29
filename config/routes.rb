@@ -8,8 +8,8 @@ EffectiveLearndash::Engine.routes.draw do
   # Public routes
   scope module: 'effective' do
     resources :learndash_courses, only: [:index, :show] do
-      resources :course_purchase_wizard, name: 'purchase', only: [:new, :show, :destroy] do
-        resources :build, controller: :course_purchase_wizard, only: [:show, :update]
+      resources :course_purchase_wizards, only: [:new, :show, :destroy] do
+        resources :build, controller: :course_purchase_wizards, only: [:show, :update]
       end
     end
   end

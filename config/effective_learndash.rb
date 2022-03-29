@@ -15,4 +15,8 @@ EffectiveLearndash.setup do |config|
   # Usernames can only contain lowercase letters (a-z) and numbers.
   # config.wp_username = Proc.new { |user| "user#{user.id}" }
   # config.wp_password = Proc.new { |user| SecureRandom.base64(12) }
+
+  # Course Purchase Wizard Settings
+  # config.course_purchase_wizard_class_name = 'Effective::CoursePurchaseWizard'
+
 end

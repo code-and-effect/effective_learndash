@@ -1,0 +1,26 @@
+= effective_form_with(model: [:admin, learndash_course], engine: true) do |f|
+  = f.static_field :title
+
+  = f.static_field :learndash_course_url do
+    = link_to(learndash_course.link, learndash_course.link, target: '_blank')
+
+  = f.static_field :learndash_course_admin do
+    = link_to "Learndash LMS Course Admin", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/post.php?post=#{learndash_course.course_id}&action=edit", target: '_blank'
+
+  = f.check_box :can_purchase, label: 'Yes, this course is available for purchase'
+
+  = f.show_if :can_purchase, true do
+    %p Charged to enroll in this learndash course:
+
+    .row
+      .col-lg-3= f.price_field :regular_price, label: 'Price to applicants or new users'
+
+    .row
+      .col-lg-3= f.price_field :member_price, label: 'Price to existing members'
+
+    = f.check_box :tax_exempt
+
+    .row
+      .col-lg-3= f.text_field :qb_item_name, label: "Quickbooks Item Name"
+
+  = f.submit

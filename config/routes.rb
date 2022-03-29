@@ -8,7 +8,7 @@ EffectiveLearndash::Engine.routes.draw do
   namespace :admin do
     get '/learndash', to: 'learndash#index', as: :learndash
 
-    resources :learndash_users, only: [:index, :show, :new, :create, :update] do
+    resources :learndash_users, except: [:edit, :destroy] do
       post :refresh, on: :member
     end
 
@@ -16,10 +16,13 @@ EffectiveLearndash::Engine.routes.draw do
       post :refresh, on: :member
     end
 
-    resources :learndash_courses, only: [:index, :show, :update] do
+    resources :learndash_courses, only: [:index, :edit, :update] do
       get :refresh, on: :collection
     end
 
+    resources :course_purchases, only: [:index] do
+      post :archive, on: :member
+      post :unarchive, on: :member
+    end
   end
-
 end

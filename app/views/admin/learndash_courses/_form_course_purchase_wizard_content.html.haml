@@ -1,0 +1,19 @@
+%p Each of the following content areas will be displayed on the course purchase wizard.
+
+= effective_form_with(model: [:admin, learndash_course], engine: true) do |f|
+  = card("All Steps") do
+    = f.rich_text_area "rich_text_all_steps_content", label: false,
+      hint: "displayed on all steps"
+
+  %hr
+
+  - enabled = EffectiveLearndash.CoursePurchaseWizard.all_wizard_steps
+
+  - EffectiveLearndash.CoursePurchaseWizard::WIZARD_STEPS.each do |step, title|
+    - next unless enabled.include?(step)
+
+    = card("#{title}") do
+      = f.rich_text_area "rich_text_#{step}_content", label: false,
+        hint: "displayed on the course purchase wizard #{step} wizard step only"
+
+  = f.submit

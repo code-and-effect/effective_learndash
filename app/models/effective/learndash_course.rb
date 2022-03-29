@@ -15,11 +15,18 @@ module Effective
     # rich_text_select_content
     # rich_text_select_content
 
+    acts_as_slugged
+    log_changes if respond_to?(:log_changes)
+    acts_as_role_restricted if respond_to?(:acts_as_role_restricted)
+
     effective_resource do
       # This user the wordpress credentials
       course_id             :integer
       title                 :string
       status                :string
+
+      # Our attributes
+      slug                   :string
 
       # For course purchases
       can_purchase          :boolean
@@ -31,13 +38,41 @@ module Effective
       qb_item_name          :string
       tax_exempt            :boolean
 
+      # Access
+      roles_mask             :integer
+      authenticate_user      :boolean
+
       timestamps
     end
 
     scope :deep, -> { all }
     scope :sorted, -> { order(:title) }
+    scope :purchasable, -> { where(can_purchase: true) }
 
-    scope :can_purchase, -> { where(can_purchase: true) }
+    scope :paginate, -> (page: nil, per_page: nil) {
+      page = (page || 1).to_i
+      offset = [(page - 1), 0].max * (per_page || EffectiveLearndash.per_page)
+
+      limit(per_page).offset(offset)
+    }
+
+    scope :learndash_courses, -> (user: nil, unpublished: false) {
+      scope = all.deep.sorted
+
+      if defined?(EffectiveRoles) && EffectiveLearndash.use_effective_roles
+        scope = scope.for_role(user&.roles)
+      end
+
+      if user.blank?
+        scope = scope.where(authenticate_user: false)
+      end
+
+      # unless unpublished
+      #   scope = scope.published
+      # end
+
+      scope
+    }
 
     validates :course_id, presence: true
     validates :status, presence: true
@@ -62,6 +97,19 @@ module Effective
 
     def to_s
       title.presence || 'learndash course'
+    end
+
+    def body
+      rich_text_body
+    end
+
+    def draft?
+      false
+    end
+
+    def purchasable?
+      return false if draft?
+      can_purchase?
     end
 
   end

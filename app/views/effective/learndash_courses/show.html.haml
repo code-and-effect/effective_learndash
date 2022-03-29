@@ -1,0 +1,6 @@
+.effective-learndash-course
+  - if @learndash_course.purchasable?
+    .resource-buttons
+      = link_to 'Purchase Course', effective_learndash.new_learndash_course_course_purchase_wizard_path(@learndash_course), class: 'btn btn-primary'
+
+  = render 'effective/learndash_courses/learndash_course', learndash_course: @learndash_course

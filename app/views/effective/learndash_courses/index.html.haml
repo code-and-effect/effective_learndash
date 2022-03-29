@@ -1,0 +1,5 @@
+= card do
+  - if @datatable.present?(self)
+    = render_datatable(@datatable, simple: true)
+  - else
+    %p There are no courses available for purchase. When there are, we'll show them here.

@@ -44,6 +44,8 @@ module EffectiveLearndashCoursePurchaseWizard
     accepts_nested_attributes_for :owner
 
     # Effective Namespace
+    belongs_to :learndash_course, class_name: 'Effective::LearndashCourse'
+
     has_many :course_purchases, -> { order(:id) }, class_name: 'Effective::CoursePurchase', inverse_of: :course_purchase_wizard, dependent: :destroy
     accepts_nested_attributes_for :course_purchases, reject_if: :all_blank, allow_destroy: true
 

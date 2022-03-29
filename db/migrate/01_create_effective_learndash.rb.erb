@@ -22,6 +22,12 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
       t.string  :title
       t.string  :link
 
+      # Our attributes
+      t.string :slug
+
+      t.integer :roles_mask
+      t.boolean :authenticate_user, default: false
+
       # Course Purchases
       t.boolean :can_purchase, default: false
 
@@ -84,6 +90,8 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.1]
 
       t.integer :user_id
       t.string :user_type
+
+      t.integer :learndash_course_id
 
       # Acts as Statused
       t.string :status

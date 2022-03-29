@@ -1,0 +1,15 @@
+.card
+  .card-body
+    %table.table.effective-learndash-courses-table
+      %tbody
+        %tr
+          %th Prices
+          %td
+            Regular Price: #{price_to_currency(learndash_course.regular_price)}
+            %br
+            Member Price: #{price_to_currency(learndash_course.member_price)}
+
+        - if learndash_course.body.present?
+          %tr
+            %th Description
+            %td= learndash_course.body

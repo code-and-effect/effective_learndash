@@ -19,4 +19,9 @@ EffectiveLearndash.setup do |config|
   # Course Purchase Wizard Settings
   # config.course_purchase_wizard_class_name = 'Effective::CoursePurchaseWizard'
 
+  # Pagination length on the Events#index page
+  config.per_page = 10
+
+  # Events can be restricted by role
+  config.use_effective_roles = true
 end

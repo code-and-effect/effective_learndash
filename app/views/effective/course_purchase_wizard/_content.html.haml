@@ -1,0 +1,10 @@
+- all_steps_content = resource.learndash_course&.rich_text_all_steps_content
+- step_content = resource.learndash_course&.send("rich_text_#{step}_content")
+
+- if all_steps_content.present?
+  .card.mb-4
+    .card-body= all_steps_content
+
+- if step_content.present?
+  .card.mb-4
+    .card-body= step_content

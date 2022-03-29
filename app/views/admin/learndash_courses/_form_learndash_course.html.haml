@@ -7,6 +7,10 @@
   = f.static_field :learndash_course_admin do
     = link_to "Learndash LMS Course Admin", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/post.php?post=#{learndash_course.course_id}&action=edit", target: '_blank'
 
+  - if f.object.persisted? || f.object.errors.include?(:slug)
+    - current_url = (effective_learndash.learndash_course_url(f.object) rescue nil)
+    = f.text_field :slug, hint: "The slug controls this course's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This course is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url }".html_safe
+
   = f.check_box :can_purchase, label: 'Yes, this course is available for purchase'
 
   = f.show_if :can_purchase, true do

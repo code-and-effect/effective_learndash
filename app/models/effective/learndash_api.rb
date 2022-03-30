@@ -60,13 +60,14 @@ module Effective
 
       username = username_for(owner)
       password = password_for(owner)
+      email = email_for(owner)
 
       payload = {
         username: username,
         password: password,
+        email: email,
 
         name: owner.to_s,
-        email: owner.email,
         roles: ['subscriber'],
 
         first_name: owner.try(:first_name),
@@ -150,6 +151,14 @@ module Effective
       name = EffectiveLearndash.wp_username_for(resource)
       name = "test#{name}" unless Rails.env.production?
       name
+    end
+
+    def email_for(resource)
+      raise('expected a learndash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
+
+      email = resource.email
+      email = "test#{email}" unless Rails.env.production?
+      email
     end
 
     def password_for(resource)

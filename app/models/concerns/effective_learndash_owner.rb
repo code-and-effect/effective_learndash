@@ -57,7 +57,7 @@ module EffectiveLearndashOwner
     return true if enrollment.completed?
 
     # Check the API
-    enrollment.sync!
+    enrollment.refresh!
     enrollment.completed?
   end
 

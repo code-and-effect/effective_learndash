@@ -7,6 +7,12 @@
 
       %p You are registering for #{resource.course}.
 
+      - existing = resource.owner.learndash_user&.enrollment(course: resource.course)
+
+      - if existing.present?
+        .alert.alert-warning
+          You are already enrolled in #{link_to(resource.course, EffectiveLearndash.learndash_url, target: '_blank')}.
+
       = effective_form_with(model: resource, url: wizard_path(step), method: :put) do |f|
         = f.hidden_field :id
 

@@ -1,7 +1,10 @@
 # Dashboard LearndashUsers
 class EffectiveLearndashEnrollmentsDatatable < Effective::Datatable
   datatable do
-    col :learndash_course
+    col :learndash_course do |enrollment|
+      link_to(enrollment.learndash_course, EffectiveLearndash.learndash_url, target: '_blank')
+    end
+
     col :progress_status
 
     col :last_step, visible: false

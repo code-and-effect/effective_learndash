@@ -1,10 +1,10 @@
 module Effective
   class LearndashEnrollment < ActiveRecord::Base
     belongs_to :owner, polymorphic: true
-    log_changes(to: :owner) if respond_to?(:log_changes)
-
     belongs_to :learndash_course
     belongs_to :learndash_user
+
+    log_changes(to: :learndash_course, except: [:last_synced_at]) if respond_to?(:log_changes)
 
     PROGRESS_STATUSES = ['not-started', 'in-progress', 'completed']
 

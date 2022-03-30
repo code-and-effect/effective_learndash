@@ -1,0 +1,3 @@
+.effective-course-registration
+  - course_registration.render_steps.each do |partial|
+    = render "effective/course_registrations/#{partial}", course_registration: course_registration, step: partial

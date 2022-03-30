@@ -1,0 +1,15 @@
+= render 'layout' do
+  = render 'effective/course_registrations/content', resource: resource
+
+  - raise('expected owner to respond to billing_address') unless resource.owner.respond_to?(:billing_address)
+
+  = card('Billing Address') do
+    %p Please enter your billing address
+
+    = effective_form_with(model: resource, url: wizard_path(step), method: :put) do |f|
+      = f.hidden_field :id
+
+      = f.fields_for(:owner, f.object.owner) do |fu|
+        = effective_address_fields(fu, :billing)
+
+      = f.save 'Save and Continue'

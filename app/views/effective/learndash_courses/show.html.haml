@@ -1,0 +1,6 @@
+.effective-learndash-course
+  - if @learndash_course.registerable?
+    .resource-buttons
+      = link_to 'Register', effective_learndash.new_learndash_course_course_registration_path(@learndash_course), class: 'btn btn-primary'
+
+  = render 'effective/learndash_courses/learndash_course', learndash_course: @learndash_course

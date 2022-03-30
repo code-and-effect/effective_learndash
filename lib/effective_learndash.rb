@@ -11,7 +11,8 @@ module EffectiveLearndash
     [
       :learndash_url, :learndash_username, :learndash_password,
       :wp_username, :wp_password,
-      :layout
+      :layout, :per_page, :use_effective_roles,
+      :course_registration_class_name
     ]
   end
 
@@ -47,6 +48,10 @@ module EffectiveLearndash
   def self.wp_password_for(owner)
     raise('expecting a learndash owner') unless owner.class.respond_to?(:effective_learndash_owner?)
     owner.instance_exec(owner, &wp_password)
+  end
+
+  def self.CourseRegistration
+    course_registration_class_name&.constantize || Effective::CourseRegistration
   end
 
 end

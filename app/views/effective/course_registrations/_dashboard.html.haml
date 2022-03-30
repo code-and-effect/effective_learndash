@@ -1,0 +1,30 @@
+-# In progress course purchase
+- wizard = EffectiveLearndash.CourseRegistration.in_progress.for(current_user).first
+- datatable = EffectiveResources.best('EffectiveCourseRegistrationsDatatable').new(self, namespace: :effective)
+
+- if wizard.present?
+  %h2 In Progress Course Registrations
+
+  %p
+    Your course registration for
+    = link_to(wizard.learndash_course, effective_learndash.learndash_course_path(wizard.learndash_course))
+    is incomplete
+
+  %p
+    Please
+    = link_to("Continue registration for #{wizard.learndash_course}", effective_learndash.learndash_course_course_registration_build_path(wizard.learndash_course, wizard, wizard.next_step), 'data-turbolinks' => false, class: 'btn btn-primary')
+    or you can
+    = link_to('Abandon course registration', effective_learndash.learndash_course_course_registration_path(wizard.learndash_course, wizard), 'data-confirm': "Really delete #{wizard}?", 'data-method': :delete, class: 'btn btn-danger')
+    to register for another course.
+
+  %hr
+
+%h2 Course Registrations
+
+- if datatable.present?
+  = render_simple_datatable(datatable)
+- else
+  %p You have no past course registrations. When you do, we'll show them here.
+
+- if false
+  %p= link_to 'View all Course', effective_learndash.learndash_courses_path, class: 'btn btn-primary'

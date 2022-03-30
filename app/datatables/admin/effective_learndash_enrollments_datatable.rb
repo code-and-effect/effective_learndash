@@ -14,8 +14,7 @@ module Admin
         time_ago_in_words(enrollment.last_synced_at) + ' ago'
       end
 
-      col :owner, visible: false
-
+      col :owner
       col :learndash_course
       col :learndash_user
 

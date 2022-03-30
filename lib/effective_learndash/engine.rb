@@ -15,6 +15,7 @@ module EffectiveLearndash
     initializer 'effective_learndash.active_record' do |app|
       ActiveSupport.on_load :active_record do
         ActiveRecord::Base.extend(EffectiveLearndashOwner::Base)
+        ActiveRecord::Base.extend(EffectiveLearndashCourseRegistration::Base)
       end
     end
 

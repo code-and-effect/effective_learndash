@@ -1,0 +1,25 @@
+= tabs do
+  = tab "Learndash Course" do
+    = render 'admin/learndash_courses/form_learndash_course', learndash_course: learndash_course
+
+  - if learndash_course.persisted?
+    = tab 'Enrollments' do
+      %h2 Enrollments
+      %p Click the New button from the below table to enroll a user into this course.
+      %p Enrolling a user here will enroll them on the Learndash site.
+      %p Alternately, if this course is available for registration, the enrollment will be created upon registration purchase.
+
+      - datatable = Admin::EffectiveLearndashEnrollmentsDatatable.new(learndash_course: learndash_course)
+      = render_datatable(datatable, inline: true)
+
+    = tab 'Registrations' do
+      %h2 Purchases
+      - datatable = Admin::EffectiveCourseRegistrationsDatatable.new(learndash_course: learndash_course)
+      = render_inline_datatable(datatable)
+
+    = tab 'Wizard' do
+      = render '/admin/learndash_courses/form_course_registration_content', learndash_course: learndash_course
+
+    - if learndash_course.respond_to?(:log_changes_datatable)
+      = tab "Logs" do
+        = render_inline_datatable(learndash_course.log_changes_datatable)

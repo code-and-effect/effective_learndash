@@ -15,4 +15,13 @@ EffectiveLearndash.setup do |config|
   # Usernames can only contain lowercase letters (a-z) and numbers.
   # config.wp_username = Proc.new { |user| "user#{user.id}" }
   # config.wp_password = Proc.new { |user| SecureRandom.base64(12) }
+
+  # Course Purchase Wizard Settings
+  # config.course_registration_class_name = 'Effective::CourseRegistration'
+
+  # Pagination length on the Events#index page
+  config.per_page = 10
+
+  # Events can be restricted by role
+  config.use_effective_roles = true
 end

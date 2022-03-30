@@ -1,0 +1,21 @@
+= render 'layout' do
+  = render 'effective/course_registrations/content', resource: resource
+
+  = card('Course') do
+    = render('effective/learndash_courses/learndash_course', learndash_course: resource.learndash_course)
+
+    %p You qualify for #{resource.member_pricing? ? 'member' : 'regular'} pricing.
+
+    = effective_form_with(model: resource, url: wizard_path(step), method: :put) do |f|
+      = f.hidden_field :id
+
+      = f.fields_for :course_registrants, (f.object.course_registrant || f.object.build_course_registrant) do |fr|
+        = fr.hidden_field :course_registration_id
+        = fr.hidden_field :course_registration_type
+
+        = fr.hidden_field :owner_id
+        = fr.hidden_field :owner_type
+
+        = fr.hidden_field :learndash_course_id
+
+      = f.save 'Save and Continue'

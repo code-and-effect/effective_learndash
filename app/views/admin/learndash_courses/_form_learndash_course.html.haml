@@ -1,0 +1,32 @@
+= effective_form_with(model: [:admin, learndash_course], engine: true) do |f|
+  = f.static_field :title
+
+  = f.static_field :learndash_course_url do
+    = link_to(learndash_course.link, learndash_course.link, target: '_blank')
+
+  = f.static_field :learndash_course_admin do
+    = link_to "Learndash LMS Course Admin", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/post.php?post=#{learndash_course.course_id}&action=edit", target: '_blank'
+
+  - if f.object.persisted? || f.object.errors.include?(:slug)
+    - current_url = (effective_learndash.learndash_course_url(f.object) rescue nil)
+    = f.text_field :slug, hint: "The slug controls this course's internet address. Be careful, changing the slug will break links that other websites may have to the old address.<br>#{('This course is currently reachable via ' + link_to(current_url.gsub(f.object.slug, '<strong>' + f.object.slug + '</strong>').html_safe, current_url)) if current_url }".html_safe
+
+  = f.check_box :can_register, label: 'Yes, this course is displayed and available for registration'
+
+  = f.show_if :can_register, true do
+    = card('Pricing Information') do
+      %p.text-muted
+        Charge the following amounts during course registration. Enter $0 for free.
+
+      .row
+        .col-lg-3= f.price_field :regular_price, label: 'Price to applicants or new users'
+
+      .row
+        .col-lg-3= f.price_field :member_price, label: 'Price to existing members'
+
+      = f.check_box :tax_exempt
+
+      .row
+        .col-lg-3= f.text_field :qb_item_name, label: "Quickbooks Item Name"
+
+  = f.submit

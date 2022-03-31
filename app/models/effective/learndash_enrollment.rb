@@ -58,7 +58,11 @@ module Effective
       progress_status == 'completed'
     end
 
-    def refresh!
+    def refresh!(force: false)
+      unless force
+        return if last_synced_at.present? && (Time.zone.now - last_synced_at) < 5
+      end
+
       assign_api_attributes
       save!
     end

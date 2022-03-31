@@ -44,13 +44,12 @@ module Effective
       owner&.to_s || username.presence || 'learndash user'
     end
 
-    def check_and_refresh!
-      return if last_synced_at.present? && (Time.zone.now - last_synced_at) < 10
-      return if learndash_enrollments.none? { |enrollment| !enrollment.completed? }
-      refresh!
-    end
+    def refresh!(force: false)
+      unless force
+        return if last_synced_at.present? && (Time.zone.now - last_synced_at) < 5
+        return if learndash_enrollments.none? { |enrollment| !enrollment.completed? }
+      end
 
-    def refresh!
       assign_api_course_enrollments
       save!
     end

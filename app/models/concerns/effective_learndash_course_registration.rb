@@ -124,7 +124,7 @@ module EffectiveLearndashCourseRegistration
   end
 
   def member_pricing?
-    learndash_owner.is?(:member)
+    learndash_owner.membership_present?
   end
 
   def assign_pricing
@@ -151,7 +151,7 @@ module EffectiveLearndashCourseRegistration
     # Save record
     save!
 
-    # Create a learndash user now before payment
+    # Create a learndash user now before payment to catch any errors in server stuff before payment.
     learndash_owner.create_learndash_user
     raise('expected a persisted learndash user') unless learndash_owner.learndash_user&.persisted?
 

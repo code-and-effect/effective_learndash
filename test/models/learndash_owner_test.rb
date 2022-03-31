@@ -19,7 +19,7 @@ class LearndashOwnerTest < ActiveSupport::TestCase
     assert learndash_user.persisted?
 
     assert_equal user, learndash_user.owner
-    assert_equal user.email, learndash_user.email
+    assert_equal "test#{user.email}", learndash_user.email
 
     user.reload
     assert user.learndash_user.present?

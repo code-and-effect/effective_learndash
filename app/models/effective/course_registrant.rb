@@ -37,6 +37,8 @@ module Effective
 
     before_validation(if: -> { learndash_course.present? }) do
       self.price ||= learndash_course.price
+      self.qb_item_name ||= learndash_course.qb_item_name
+      self.tax_exempt = learndash_course.tax_exempt? if self.tax_exempt.nil?
     end
 
     def to_s
@@ -45,14 +47,6 @@ module Effective
 
     def title
       "#{learndash_course} - #{owner}"
-    end
-
-    def tax_exempt
-      learndash_course.tax_exempt
-    end
-
-    def qb_item_name
-      learndash_course.qb_item_name
     end
 
   end

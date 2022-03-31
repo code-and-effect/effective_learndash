@@ -62,7 +62,7 @@ class LearndashApiTest < ActiveSupport::TestCase
     response = api.create_user(user)
     assert response.present?
 
-    assert_equal user.email, response[:email]
+    assert_equal "test#{user.email}", response[:email]
     assert_equal user.first_name, response[:first_name]
     assert_equal user.last_name, response[:last_name]
 

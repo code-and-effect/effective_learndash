@@ -2,19 +2,23 @@
   %table.table.table-sm
     %tbody
       %tr
-        %th.border-0 Learndash Course
+        %th.border-0 Course
         %td.border-0
-          %p= link_to(course_registration.course, EffectiveLearndash.learndash_url, target: '_blank')
+          %p
+            %strong=course_registration.course
 
-          %p Please sign into Learndash with the following credentials:
           - learndash_user = course_registration.learndash_owner.learndash_user
+          %p Your course account credentials are:
 
           %ul
-            %li Email: #{learndash_user.email}
-            %li Username: #{learndash_user.username}
-            %li Password: #{learndash_user.password}
+            %li
+              %strong Username:
+              #{learndash_user.username}
+            %li
+              %strong Password:
+              #{learndash_user.password}
 
-          %p= link_to('Learndash LMS', EffectiveLearndash.learndash_url, target: '_blank')
+          %p= link_to('Sign in to your course account', EffectiveLearndash.learndash_url, target: '_blank', class: 'btn btn-primary mb-2')
 
       - if request.path.start_with?('/admin')
         %tr

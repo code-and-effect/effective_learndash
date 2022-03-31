@@ -7,7 +7,7 @@ module Admin
 
     def refresh
       resource_scope.refresh!
-      flash[:success] = "Successfully refreshed Courses from Learndash"
+      flash[:success] = "Successfully refreshed Courses from LearnDash"
       redirect_to effective_learndash.admin_learndash_courses_path
     end
 

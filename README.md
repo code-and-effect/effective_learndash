@@ -1,6 +1,6 @@
-# Effective Learndash
+# Effective LearnDash
 
-Create Wordpress users and read Learndash course progress. This is an unoffocial integration that is not supported or affiliated with WordPress or Learndash.
+Create Wordpress users and read LearnDash course progress. This is an unofficial integration that is not supported or affiliated with WordPress or LearnDash.
 
 ## Getting Started
 
@@ -91,29 +91,29 @@ if user.admin?
 end
 ```
 
-## Configuring Learndash
+## Configuring LearnDash
 
-Your Wordpress should be configured ahead of time with the Learndash plugin.
+Your WordPress should be configured ahead of time with the LearnDash plugin.
 
 Please generate an application password via:
 
 https://make.wordpress.org/core/2020/11/05/application-passwords-integration-guide/
 
-and fill in the username/password details in config/initializers/effective_leardash.rb
+and fill in the username/password details in config/initializers/effective_learndash.rb
 
-## Working with Learndash
+## Working with LearnDash
 
 Visit `/admin/learndash_courses` and Refresh the list of Courses.
 
-Create a New Learndash User will create a new Wordpress/Learndash account with a username/password according to the settings in the config file.
+Create a New LearnDash User will create a new WordPress/LearnDash account with a username/password according to the settings in the config file.
 
 When you create a user, you only get access to the password once. So any existing users will have an unknown password.
 
-Create a new Learndash Enrollment to enroll a learndash user into a course. This will begin tracking their progress.
+Create a new LearnDash Enrollment to enroll a LearnDash user into a course. This will begin tracking their progress.
 
-There are no webhooks or callbacks from Learndash, everything is a GET request that updates the local database.
+There are no webhooks or callbacks from LearnDash, everything is a GET request that updates the local database.
 
-You can refresh an entire learndash user in one operation and it will sync the entire user at once, `user.learndash_user.refresh!`
+You can refresh an entire LearnDash user in one operation and it will sync the entire user at once, `user.learndash_user.refresh!`
 
 ## License
 

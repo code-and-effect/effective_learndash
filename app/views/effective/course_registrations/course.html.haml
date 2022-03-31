@@ -4,8 +4,6 @@
   = card('Course') do
     = render('effective/learndash_courses/learndash_course', learndash_course: resource.learndash_course)
 
-    %p You qualify for #{resource.member_pricing? ? 'member' : 'regular'} pricing.
-
     = effective_form_with(model: resource, url: wizard_path(step), method: :put) do |f|
       = f.hidden_field :id
 

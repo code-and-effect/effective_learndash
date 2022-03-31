@@ -10,12 +10,14 @@ class EffectiveLearndashCoursesDatatable < Effective::Datatable
     order :title
     col :id, visible: false
 
-    col :title, label: 'Title' do |learndash_course|
-      link_to(learndash_course.to_s, effective_learndash.learndash_course_path(learndash_course))
+    col :title do |learndash_course|
+      learndash_course.to_s
     end
 
     actions_col show: false do |learndash_course|
-      if learndash_course.can_register?
+      if current_user.learndash_enrollment(course: learndash_course).present?
+        'Registered. Please access from the home dashboard or applicant wizard.'
+      elsif learndash_course.can_register?
         dropdown_link_to('Register', effective_learndash.new_learndash_course_course_registration_path(learndash_course))
       end
     end

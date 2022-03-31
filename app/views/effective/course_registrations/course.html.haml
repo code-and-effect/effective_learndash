@@ -2,7 +2,8 @@
   = render 'effective/course_registrations/content', resource: resource
 
   = card('Course') do
-    = render('effective/learndash_courses/learndash_course', learndash_course: resource.learndash_course)
+    %p= resource.learndash_course
+    %p= price_to_currency(resource.registration_price)
 
     = effective_form_with(model: resource, url: wizard_path(step), method: :put) do |f|
       = f.hidden_field :id

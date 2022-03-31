@@ -9,7 +9,6 @@
 - if learndash_user.present? && authorized
   - learndash_user.refresh!
 
-
   %p Your course account credentials are:
 
   %ul
@@ -20,13 +19,11 @@
       %strong Password:
       #{learndash_user.password}
 
-  %p
-    = link_to('Sign in to your course account', EffectiveLearndash.learndash_url, target: '_blank', class: 'btn btn-primary')
+  %p= link_to('Sign in to your course account', EffectiveLearndash.learndash_url, target: '_blank', class: 'btn btn-primary')
 
   - if learndash_user.learndash_enrollments.present?
     - datatable = EffectiveResources.best('EffectiveLearndashEnrollmentsDatatable').new(self)
     = render_datatable(datatable, simple: true)
 
   - else
-    You are not enrolled in any courses.
-
+    %p You are not enrolled in any courses.

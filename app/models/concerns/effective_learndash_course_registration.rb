@@ -127,11 +127,16 @@ module EffectiveLearndashCourseRegistration
     learndash_owner.membership_present?
   end
 
-  def assign_pricing
-    price = (member_pricing? ? learndash_course.member_price : learndash_course.regular_price)
+  def registration_price
+    raise('expected a learndash course') unless learndash_course.present?
+    raise('expected a learndash owner') unless learndash_owner.present?
 
+    member_pricing? ? learndash_course.member_price : learndash_course.regular_price
+  end
+
+  def assign_pricing
     course_registrant.assign_attributes(
-      price: price,
+      price: registration_price,
       qb_item_name: learndash_course.qb_item_name,
       tax_exempt: learndash_course.tax_exempt
     )

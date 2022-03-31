@@ -6,12 +6,12 @@ class EffectiveCourseRegistrationsDatatable < Effective::Datatable
     col :token, visible: false
     col :created_at, visible: false
 
-    col(:submitted_at, label: 'Registered on') do |registration|
-      registration.submitted_at&.strftime('%F') || 'Incomplete'
+    col :learndash_course, label: 'Title', search: :string do |registration|
+      registration.learndash_course.to_s
     end
 
-    col :learndash_course, search: :string do |registration|
-      registration.learndash_course.to_s
+    col(:submitted_at, label: 'Registered on') do |registration|
+      registration.submitted_at&.strftime('%F') || 'Incomplete'
     end
 
     col :owner, visible: false, search: :string

@@ -1,11 +1,11 @@
 # Dashboard LearndashUsers
 class EffectiveLearndashEnrollmentsDatatable < Effective::Datatable
   datatable do
-    col :learndash_course do |enrollment|
-      link_to(enrollment.learndash_course, EffectiveLearndash.learndash_url, target: '_blank')
+    col :learndash_course, label: 'Title' do |enrollment|
+      enrollment.learndash_course.to_s
     end
 
-    col :progress_status
+    col :progress_status, label: 'Status'
 
     col :last_step, visible: false
     col :steps_completed, visible: false
@@ -16,9 +16,9 @@ class EffectiveLearndashEnrollmentsDatatable < Effective::Datatable
 
     actions_col(show: false) do |enrollment|
       if enrollment.not_started?
-        dropdown_link_to('Start', EffectiveLearndash.learndash_url, target: '_blank')
+        dropdown_link_to('Access Course', EffectiveLearndash.learndash_url, target: '_blank')
       elsif enrollment.in_progress?
-        dropdown_link_to('Continue', EffectiveLearndash.learndash_url, target: '_blank')
+        dropdown_link_to('Continue Course', EffectiveLearndash.learndash_url, target: '_blank')
       else
         dropdown_link_to('Show', EffectiveLearndash.learndash_url, target: '_blank')
       end

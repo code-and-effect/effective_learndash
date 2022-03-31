@@ -7,7 +7,7 @@ end
 EffectiveLearndash::Engine.routes.draw do
   # Public routes
   scope module: 'effective' do
-    resources :learndash_courses, only: [:index, :show] do
+    resources :learndash_courses, only: [:index] do
       resources :course_registrations, only: [:new, :show, :destroy] do
         resources :build, controller: :course_registrations, only: [:show, :update]
       end

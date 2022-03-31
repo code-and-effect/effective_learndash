@@ -146,7 +146,7 @@ module Effective
     end
 
     def username_for(resource)
-      raise('expected a learndash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
+      raise('expected a LearnDash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
 
       name = EffectiveLearndash.wp_username_for(resource)
       name = "test#{name}" unless Rails.env.production?
@@ -154,7 +154,7 @@ module Effective
     end
 
     def email_for(resource)
-      raise('expected a learndash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
+      raise('expected a LearnDash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
 
       email = resource.email
       email = "test#{email}" unless Rails.env.production?
@@ -162,7 +162,7 @@ module Effective
     end
 
     def password_for(resource)
-      raise('expected a learndash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
+      raise('expected a LearnDash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
       EffectiveLearndash.wp_password_for(resource)
     end
 
@@ -178,7 +178,7 @@ module Effective
       elsif response.kind_of?(Array)
         response.first
       else
-        raise("unexpected Learndash API response #{response}")
+        raise("unexpected LearnDash API response #{response}")
       end
     end
 
@@ -199,7 +199,7 @@ module Effective
         elsif response.kind_of?(Array)
           response
         else
-          raise("unexpected Learndash API find_by response #{response}")
+          raise("unexpected LearnDash API find_by response #{response}")
         end
       )
 

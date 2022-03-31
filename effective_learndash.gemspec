@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors     = ['Code and Effect']
   spec.email       = ['info@codeandeffect.com']
   spec.homepage    = 'https://github.com/code-and-effect/effective_learndash'
-  spec.summary     = 'Create Wordpress users and read Learndash course progress'
-  spec.description = 'Create Wordpress users and read Learndash course progress'
+  spec.summary     = 'Create Wordpress users and read LearnDash course progress'
+  spec.description = 'Create Wordpress users and read LearnDash course progress'
   spec.license     = 'MIT'
 
   spec.files = Dir["{app,config,db,lib}/**/*"] + ['MIT-LICENSE', 'Rakefile', 'README.md']

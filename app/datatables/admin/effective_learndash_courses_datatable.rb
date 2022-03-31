@@ -4,7 +4,7 @@ module Admin
       order :title
 
       col :id, visible: false
-      col :course_id, label: 'Learndash Id', visible: false
+      col :course_id, label: 'LearnDash Id', visible: false
 
       col :title
       col :status

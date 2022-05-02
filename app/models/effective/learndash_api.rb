@@ -30,7 +30,7 @@ module Effective
     def find_user(value)
       # Find by email
       if value.kind_of?(String) && value.include?('@')
-        return find_by("/wp/v2/users", :email, value)
+        return find_by("/wp/v2/users", :email, email_for(value))
       end
 
       # Fetch by saved param value
@@ -39,8 +39,7 @@ module Effective
       return user if user.present?
 
       # Find by email
-      email = value.try(:email)
-      email = "test#{email}" if email.present? && !Rails.env.production?
+      email = email_for(value)
       user = find_by("/wp/v2/users", :email, email) if email
       return user if user.present?
 
@@ -123,7 +122,6 @@ module Effective
 
     # private under this point
 
-
     def user_id(resource)
       if resource.class.respond_to?(:effective_learndash_owner?) # This is a user
         resource.learndash_user&.user_id
@@ -148,23 +146,21 @@ module Effective
 
     def username_for(resource)
       raise('expected a LearnDash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
-
       name = EffectiveLearndash.wp_username_for(resource)
-      name = "test#{name}" unless Rails.env.production?
-      name
-    end
 
-    def email_for(resource)
-      raise('expected a LearnDash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
-
-      email = resource.email
-      email = "test#{email}" unless Rails.env.production?
-      email
+      Rails.env.production? ? name : "test#{name}"
     end
 
     def password_for(resource)
       raise('expected a LearnDash owner') unless resource.class.respond_to?(:effective_learndash_owner?) # This is a user
       EffectiveLearndash.wp_password_for(resource)
+    end
+
+    def email_for(value)
+      email = value.try(:email) || value.to_s
+      return nil unless email.present? && email.include?('@')
+
+      Rails.env.production? ? email : "test#{email}"
     end
 
     def find(endpoint, params = nil)

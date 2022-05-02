@@ -2,8 +2,8 @@
 
 class EffectiveCourseRegistrantsDatatable < Effective::Datatable
   datatable do
-    col :learndash_course
-    col :owner, label: 'User', action: false
+    col :learndash_course, label: 'Title'
+    col :owner, label: 'Registrant', action: false
     col :price, as: :price
   end
 

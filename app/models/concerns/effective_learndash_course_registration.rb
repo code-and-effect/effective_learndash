@@ -87,9 +87,9 @@ module EffectiveLearndashCourseRegistration
       course_registrants
     end
 
+    # Enroll them in all courses.
     def after_submit_purchased!
-      # Enroll them in the course!
-      learndash_owner.create_learndash_enrollment(course: learndash_course)
+      course_registrants.each { |registrant| registrant.owner.create_learndash_enrollment(course: registrant.learndash_course) }
     end
 
   end
@@ -116,7 +116,7 @@ module EffectiveLearndashCourseRegistration
   end
 
   def build_course_registrant
-    course_registrants.build(owner: owner)
+    course_registrants.build(owner: owner, learndash_course: learndash_course)
   end
 
   def learndash_owner
@@ -151,7 +151,7 @@ module EffectiveLearndashCourseRegistration
 
     # Assign prices
     assign_pricing()
-    raise('expected course_registrant to have a price') if course_registrant.price.blank?
+    raise('expected course_registrants to have a price') if course_registrants.any? { |registrant| registrant.price.blank? }
 
     # Save record
     save!

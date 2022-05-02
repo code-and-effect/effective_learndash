@@ -40,6 +40,7 @@ module Effective
 
       # Find by email
       email = value.try(:email)
+      email = "test#{email}" if email.present? && !Rails.env.production?
       user = find_by("/wp/v2/users", :email, email) if email
       return user if user.present?
 

@@ -87,8 +87,9 @@ module EffectiveLearndashCourseRegistration
       course_registrants
     end
 
-    # Enroll them in all courses.
+    # Create learndash user and enroll in all courses
     def after_submit_purchased!
+      learndash_owner.create_learndash_user
       course_registrants.each { |registrant| registrant.owner.create_learndash_enrollment(course: registrant.learndash_course) }
     end
 
@@ -155,12 +156,6 @@ module EffectiveLearndashCourseRegistration
 
     # Save record
     save!
-
-    # Create a learndash user now before payment to catch any errors in server stuff before payment.
-    learndash_owner.create_learndash_user
-    raise('expected a persisted learndash user') unless learndash_owner.learndash_user&.persisted?
-
-    true
   end
 
   private

@@ -115,6 +115,12 @@ There are no webhooks or callbacks from LearnDash, everything is a GET request t
 
 You can refresh an entire LearnDash user in one operation and it will sync the entire user at once, `user.learndash_user.refresh!`
 
+## Delete User
+
+If you need to delete a user, from wordpress:
+
+1. Top Left Corner -> My Sites -> Network Admin -> Users
+
 ## License
 
 MIT License. Copyright [Code and Effect Inc.](http://www.codeandeffect.com/)

@@ -98,5 +98,11 @@ module Effective
       assign_attributes(last_synced_at: Time.zone.now)
     end
 
+    def update_password!
+      save!
+      EffectiveLearndash.api.update_password(owner, password)
+      true
+    end
+
   end
 end

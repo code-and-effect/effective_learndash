@@ -1,6 +1,16 @@
 = effective_form_with(model: [:admin, learndash_user], engine: true) do |f|
 
-  = f.select :owner, {'Owners' => current_user.class.sorted }, polymorphic: true,
-    hint: 'Create a LearnDash account for this user'
+  - if f.object.new_record?
+    = f.select :owner, {'Owners' => current_user.class.sorted }, polymorphic: true,
+      hint: 'Create a LearnDash account for this user'
 
-  = f.submit
+    = f.submit
+
+  - if f.object.persisted?
+    = f.text_field :password, label: 'New Password',
+      value: EffectiveLearndash.wp_password_for(learndash_user.owner)
+
+    %p.text-muted
+      This action will also update the LearnDash LMS wordpress user account password.
+
+    = f.submit 'Update Password'

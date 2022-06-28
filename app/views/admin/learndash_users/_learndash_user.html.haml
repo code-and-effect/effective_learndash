@@ -3,12 +3,18 @@
     = link_to(learndash_user.owner, "/admin/users/#{learndash_user.owner.to_param}/edit")
     has an existing account on LearnDash.
 
+  %p= link_to "LearnDash LMS User Admin", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
+
   %ul
     %li Email: #{learndash_user.email}
     %li Username: #{learndash_user.username}
-    %li Password: #{learndash_user.password}
+    %li
 
-  %p= link_to "LearnDash LMS User Admin", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
+      Password: #{learndash_user.password}
+
+      = collapse('change password', card_class: 'my-2') do
+        .row
+          .col-lg-4= render('admin/learndash_users/form', learndash_user: learndash_user)
 
   %p
     %small Last refreshed #{time_ago_in_words(learndash_user.last_synced_at)} ago.

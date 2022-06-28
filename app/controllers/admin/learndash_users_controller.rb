@@ -7,5 +7,13 @@ module Admin
 
     on :refresh, success: -> { "Successfully refreshed #{resource} and all course enrollments" }
 
+    submit :update_password, 'Update Password'
+
+    private
+
+    def permitted_params
+      params.require(:effective_learndash_user).permit!
+    end
+
   end
 end

@@ -52,6 +52,17 @@ module Effective
       nil
     end
 
+    def update_password(owner, password)
+      raise('expected a leardash owner') unless owner.class.respond_to?(:effective_learndash_owner?)
+      raise('expected an existing learndash user') unless owner.learndash_user&.persisted?
+      raise('expected a password') unless password.present?
+
+      user = user_id(owner) || raise('expected a user')
+      payload = { password: password }
+
+      post("/wp/v2/users/#{user}", payload.stringify_keys)
+    end
+
     # Create User
     # Usernames can only contain lowercase letters (a-z) and numbers.
     def create_user(owner)

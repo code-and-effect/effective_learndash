@@ -4,6 +4,8 @@ module Effective
     belongs_to :learndash_course
     belongs_to :learndash_user
 
+    acts_as_reportable if respond_to?(:acts_as_reportable)
+
     log_changes(to: :learndash_course, except: [:last_synced_at]) if respond_to?(:log_changes)
 
     PROGRESS_STATUSES = ['not-started', 'in-progress', 'completed']
@@ -30,6 +32,11 @@ module Effective
 
     scope :deep, -> { all }
     scope :sorted, -> { order(:id) }
+
+    # effective_reports
+    def reportable_scopes
+      { completed: nil, in_progress: nil, not_started: nil }
+    end
 
     before_validation do
       self.owner ||= learndash_user&.owner

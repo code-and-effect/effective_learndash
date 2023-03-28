@@ -23,6 +23,19 @@ module EffectiveLearndashOwner
     # Not used
     has_many :learndash_enrollments, class_name: 'Effective::LearndashEnrollment', as: :owner, inverse_of: :owner, dependent: :delete_all
     accepts_nested_attributes_for :learndash_enrollments, allow_destroy: true
+
+    scope :with_completed_learndash_course, -> (course) {
+      courses = Array(course)
+      raise('expected a Learndash Course') unless courses.all? { |course| course.kind_of?(Effective::LearndashCourse) }
+
+      owners = Effective::LearndashEnrollment.completed
+        .where(learndash_course: courses)
+        .where(owner_type: name)
+        .select(:owner_id)
+
+      where(id: owners)
+    }
+
   end
 
   # Find

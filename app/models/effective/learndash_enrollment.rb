@@ -74,11 +74,7 @@ module Effective
     end
 
     def completed_on
-      date_completed
-    end
-
-    def completed_at
-      date_completed
+      date_completed || (created_at if finished?)
     end
 
     def mark_as_finished!
@@ -112,13 +108,16 @@ module Effective
 
       assign_attributes(
         last_synced_at: Time.zone.now,
-        progress_status: data[:progress_status],
         last_step: data[:last_step],
         steps_completed: data[:steps_completed],
         steps_total: data[:steps_total],
         date_started: Time.use_zone('UTC') { Time.zone.parse(data[:date_started]) },
         date_completed: (Time.use_zone('UTC') { Time.zone.parse(data[:date_completed]) } if data[:date_completed].present?)
       )
+
+      assign_attributes(progress_status: data[:progress_status]) unless finished?
+
+      true
     end
 
   end

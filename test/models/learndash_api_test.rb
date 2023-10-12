@@ -2,6 +2,8 @@ require 'test_helper'
 
 class LearndashApiTest < ActiveSupport::TestCase
   test 'api credentials are present' do
+    (puts('skipping test'); return) if EffectiveLearndash.learndash_url.blank?
+
     api = EffectiveLearndash.api
 
     assert api.url.present?
@@ -10,6 +12,8 @@ class LearndashApiTest < ActiveSupport::TestCase
   end
 
   test 'me' do
+    (puts('skipping test'); return) if EffectiveLearndash.learndash_url.blank?
+
     api = EffectiveLearndash.api
 
     user = api.me()
@@ -39,6 +43,8 @@ class LearndashApiTest < ActiveSupport::TestCase
   end
 
   test 'find user' do
+    (puts('skipping test'); return) if EffectiveLearndash.learndash_url.blank?
+
     api = EffectiveLearndash.api
 
     response = api.find_user(999999)
@@ -53,6 +59,8 @@ class LearndashApiTest < ActiveSupport::TestCase
 
   # This creates a user on wordpress
   test 'create user' do
+    (puts('skipping test'); return) if EffectiveLearndash.learndash_url.blank?
+
     api = EffectiveLearndash.api
     user = build_unique_user()
 

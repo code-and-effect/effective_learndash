@@ -3,6 +3,8 @@ require 'test_helper'
 class LearndashEnrollmentTest < ActiveSupport::TestCase
   # This creates a user on wordpress
   test 'enroll a user' do
+    (puts('skipping test'); return) if EffectiveLearndash.learndash_url.blank?
+
     api = EffectiveLearndash.api
 
     # Load Existing Courses

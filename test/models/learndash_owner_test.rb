@@ -4,6 +4,8 @@ class LearndashOwnerTest < ActiveSupport::TestCase
 
   # This creates a user on wordpress
   test 'create_learndash_user' do
+    (puts('skipping test'); return) if EffectiveLearndash.learndash_url.blank?
+
     api = EffectiveLearndash.api
     user = build_unique_user()
 

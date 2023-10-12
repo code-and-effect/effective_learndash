@@ -21,7 +21,10 @@
 
 %h3 LearnDash Course Enrollments
 
-%p Click the New button from the below table to manually enroll this user into a new course.
+%p 
+  Click the New button from the below table to manually enroll this user into a new course.
+  %br
+  %small.text-muted Marking the course finished will allow them to proceed without completing the course on the Learndash LMS.
 
 - datatable = Admin::EffectiveLearndashEnrollmentsDatatable.new(learndash_user: learndash_user)
 = render_datatable(datatable, inline: true)

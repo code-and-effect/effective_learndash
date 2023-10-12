@@ -14,9 +14,9 @@ module Admin
         time_ago_in_words(enrollment.last_synced_at) + ' ago'
       end
 
-      col :owner
-      col :learndash_course
+      col :owner, visible: attributes[:learndash_user_id].blank?
       col :learndash_user
+      col :learndash_course
 
       col :progress_status
 

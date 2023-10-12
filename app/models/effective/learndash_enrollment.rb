@@ -8,7 +8,9 @@ module Effective
 
     log_changes(to: :learndash_course, except: [:last_synced_at]) if respond_to?(:log_changes)
 
-    PROGRESS_STATUSES = ['not-started', 'in-progress', 'completed']
+    # Only admin can mark finished
+    # Finished is treated as an admin override for completed?
+    PROGRESS_STATUSES = ['not-started', 'in-progress', 'completed', 'finished']
 
     effective_resource do
       last_synced_at      :string
@@ -26,7 +28,7 @@ module Effective
       timestamps
     end
 
-    scope :completed, -> { where(progress_status: 'completed') }
+    scope :completed, -> { where(progress_status: ['completed', 'finished']) }
     scope :in_progress, -> { where(progress_status: 'in-progress') }
     scope :not_started, -> { where(progress_status: 'not-started') }
 
@@ -61,8 +63,39 @@ module Effective
       progress_status == 'in-progress'
     end
 
+    # Admin override to completed
+    def finished?
+      progress_status == 'finished'
+    end
+
+    # Checked to see if the course is done throughout
     def completed?
-      progress_status == 'completed'
+      progress_status == 'completed' || finished?
+    end
+
+    def completed_on
+      date_completed
+    end
+
+    def completed_at
+      date_completed
+    end
+
+    def mark_as_finished!
+      update!(progress_status: 'finished')
+    end
+
+    # Guess old status
+    def unfinish!
+      if date_completed.present?
+        assign_attributes(progress_status: 'completed')
+      elsif date_started.present?
+        assign_attributes(progress_status: 'in-progress')
+      else
+        assign_attributes(progress_status: 'not-started')
+      end
+
+      save!
     end
 
     def refresh!(force: false)

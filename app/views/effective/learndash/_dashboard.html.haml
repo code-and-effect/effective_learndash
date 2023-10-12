@@ -1,12 +1,13 @@
 - learndash_user = current_user.try(:learndash_user)
-- authorized = learndash_user && EffectiveResources.authorized?(self, :show, learndash_user)
+- authorized_user = learndash_user && EffectiveResources.authorized?(self, :show, learndash_user)
+- authorized_registration = EffectiveResources.authorized?(self, :new, EffectiveLearndash.CourseRegistration)
 
 %h2 Courses
 
 - if learndash_user.blank?
   %p You do not have an account to access courses. When you are enrolled in a course, your account credentials will be displayed here.
 
-- if learndash_user.present? && authorized
+- if learndash_user.present? && authorized_user
   - learndash_user.refresh!
 
   %p Your course account credentials are:
@@ -22,8 +23,15 @@
   %p= link_to('Sign in to your course account', EffectiveLearndash.learndash_url, target: '_blank', class: 'btn btn-primary')
 
   - if learndash_user.learndash_enrollments.present?
+    %p You are enrolled in the following courses:
     - datatable = EffectiveResources.best('EffectiveLearndashEnrollmentsDatatable').new(self)
     = render_datatable(datatable, simple: true)
 
   - else
     %p You are not enrolled in any courses.
+
+- available = EffectiveResources.best('EffectiveLearndashAvailableCoursesDatatable').new(self)
+
+- if available.present? && authorized_registration
+  %p The following courses are available for registration:
+  = render_datatable(available, simple: true)

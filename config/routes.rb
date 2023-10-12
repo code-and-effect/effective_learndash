@@ -23,6 +23,8 @@ EffectiveLearndash::Engine.routes.draw do
 
     resources :learndash_enrollments, only: [:index, :new, :create, :update] do
       post :refresh, on: :member
+      post :mark_as_finished, on: :member
+      post :unfinish, on: :member
     end
 
     resources :learndash_courses, only: [:index, :edit, :update] do

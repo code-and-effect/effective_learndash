@@ -43,6 +43,22 @@ module EffectiveLearndashOwner
     learndash_users.first
   end
 
+  def in_progress_learndash_enrollments
+    learndash_enrollments.reject(&:completed?).sort_by(&:created_at)
+  end
+
+  def completed_learndash_enrollments
+    learndash_enrollments.select(&:completed?).sort_by(&:date_completed)
+  end
+
+  def completed_learndash_courses
+    learndash_enrollments.select(&:completed?).map(&:course).sort_by(&:id)
+  end
+
+  def learndash_enrolled_courses
+    learndash_enrollments.map { |enrollment| enrollment.learndash_course }
+  end
+
   # Find or create
   def create_learndash_user
     learndash_user || learndash_users.create!(owner: self)
@@ -67,11 +83,48 @@ module EffectiveLearndashOwner
     return false if enrollment.blank?
 
     # Return completed right away if previously marked completed
-    return true if enrollment.completed?
-
-    # Check the API
-    enrollment.refresh!
     enrollment.completed?
+
+    # DO NOT check API
+  end
+
+  def learndash_enroll!(courses:)
+    courses = Array(courses)
+
+    # Find or create the user
+    create_learndash_user
+    raise('expected a persisted learndash user') unless learndash_user&.persisted?
+
+    courses.each do |course|
+      # Find or Enroll in the course
+      create_learndash_enrollment(course: course)
+      raise('expected a persisted learndash enrollment') unless learndash_enrollment(course: course)&.persisted?
+    end
+
+    # This syncs the learndash enrollment locally
+    learndash_enrollments.select { |enrollment| courses.include?(enrollment.learndash_course) }.each do |enrollment|
+      enrollment.refresh! unless enrollment.completed?
+    end
+
+    save!
+
+    after_learndash_enroll() if respond_to?(:after_learndash_enroll)
+
+    true
+  end
+
+  def learndash_refresh!(force: false)
+    raise('expected a previously persisted learndash user') if learndash_user.blank?
+
+    learndash_enrollments.each do |enrollment|
+      enrollment.refresh!(force: force) unless (force || enrollment.completed?)
+    end
+
+    save!
+
+    after_learndash_refresh() if respond_to?(:after_learndash_refresh)
+
+    true
   end
 
 end

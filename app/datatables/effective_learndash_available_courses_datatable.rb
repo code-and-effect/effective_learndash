@@ -1,11 +1,5 @@
-# Dashboard Courses
-class EffectiveLearndashCoursesDatatable < Effective::Datatable
-  filters do
-    # Registerable should be first here, so when displayed as a simple datatable on the dashboard they only see registerable courses
-    scope :registerable
-    scope :all
-  end
-
+# Dashboard Available Courses
+class EffectiveLearndashAvailableCoursesDatatable < Effective::Datatable
   datatable do
     order :title
     col :id, visible: false
@@ -24,7 +18,10 @@ class EffectiveLearndashCoursesDatatable < Effective::Datatable
   end
 
   collection do
-    Effective::LearndashCourse.deep.learndash_courses(user: current_user)
+    enrolled = Effective::LearndashEnrollment.where(learndash_user: current_user.learndash_user).select(:learndash_course_id)
+    courses = Effective::LearndashCourse.deep.registerable.learndash_courses(user: current_user)
+
+    courses.where.not(id: enrolled)
   end
 
 end

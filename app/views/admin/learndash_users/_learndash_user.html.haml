@@ -3,7 +3,7 @@
     = link_to(learndash_user.owner, "/admin/users/#{learndash_user.owner.to_param}/edit")
     has an existing account on LearnDash.
 
-  %p= link_to "LearnDash LMS User Admin", EffectiveLearndash.learndash_url.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
+  %p= link_to "LearnDash LMS User Admin", EffectiveLearndash.learndash_url.to_s.chomp('/') + "/wp-admin/user-edit.php?user_id=#{learndash_user.user_id}", target: '_blank'
 
   %ul
     %li Email: #{learndash_user.email}

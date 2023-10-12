@@ -104,6 +104,8 @@ module Effective
     end
 
     def assign_api_attributes(data = nil)
+      return if EffectiveLearndash.disabled?
+
       data ||= EffectiveLearndash.api.find_enrollment(self) || EffectiveLearndash.api.create_enrollment(self)
 
       assign_attributes(

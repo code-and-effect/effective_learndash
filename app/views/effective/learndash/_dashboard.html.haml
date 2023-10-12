@@ -8,7 +8,7 @@
   %p You do not have an account to access courses. When you are enrolled in a course, your account credentials will be displayed here.
 
 - if learndash_user.present? && authorized_user
-  - learndash_user.refresh!
+  - learndash_user.refresh! unless EffectiveLearndash.disabled?
 
   %p Your course account credentials are:
 

@@ -83,6 +83,8 @@ module Effective
 
     # This synchronizes all the course enrollments from the API down locally.
     def assign_api_course_enrollments
+      return if EffectiveLearndash.disabled?
+
       raise('must be persisted') unless persisted?
 
       courses = LearndashCourse.all()

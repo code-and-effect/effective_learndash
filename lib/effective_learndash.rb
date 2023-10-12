@@ -18,7 +18,13 @@ module EffectiveLearndash
 
   include EffectiveGem
 
+  def self.disabled?
+    learndash_url.blank?
+  end
+
   def self.api
+    return if disabled?
+
     raise('please set learndash_url in config/initializers/effective_learndash.rb') unless learndash_url.present?
     raise('please set learndash_username in config/initializers/effective_learndash.rb') unless learndash_username.present?
     raise('please set learndash_password in config/initializers/effective_learndash.rb') unless learndash_password.present?

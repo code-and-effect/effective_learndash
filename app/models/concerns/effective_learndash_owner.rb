@@ -48,7 +48,7 @@ module EffectiveLearndashOwner
   end
 
   def completed_learndash_enrollments
-    learndash_enrollments.select(&:completed?).sort_by(&:date_completed)
+    learndash_enrollments.select(&:completed?).sort_by(&:created_at)
   end
 
   def completed_learndash_courses

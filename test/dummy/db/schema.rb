@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 101) do
     t.integer "learndash_course_id"
     t.integer "learndash_user_id"
     t.datetime "last_synced_at"
+    t.boolean "admin_completed", default: false
     t.string "progress_status"
     t.integer "last_step"
     t.integer "steps_completed"

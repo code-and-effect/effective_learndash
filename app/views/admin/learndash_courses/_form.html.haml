@@ -8,7 +8,7 @@
       %p Click the New button from the below table to enroll a user into this course.
       %p Enrolling a user here will enroll them on the LearnDash site.
       %p Alternately, if this course is available for registration, the enrollment will be created upon registration purchase.
-      %p Marking the course finished will allow them to proceed without completing the course on the Learndash LMS.
+      %p Marking the course completed here will allow them to proceed without completing the course on the Learndash LMS.
 
       - datatable = Admin::EffectiveLearndashEnrollmentsDatatable.new(learndash_course: learndash_course)
       = render_datatable(datatable, inline: true)
@@ -21,6 +21,6 @@
     = tab 'Wizard' do
       = render '/admin/learndash_courses/form_course_registration_content', learndash_course: learndash_course
 
-    - if learndash_course.respond_to?(:log_changes_datatable)
+    - if learndash_course.respond_to?(:logs_datatable)
       = tab "Logs" do
-        = render_inline_datatable(learndash_course.log_changes_datatable)
+        = render_inline_datatable(learndash_course.log_s_datatable)

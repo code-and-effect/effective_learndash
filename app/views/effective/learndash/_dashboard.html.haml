@@ -33,5 +33,6 @@
 - available = EffectiveResources.best('EffectiveLearndashAvailableCoursesDatatable').new(self)
 
 - if available.present? && authorized_registration
-  %p The following courses are available for registration:
-  = render_datatable(available, simple: true)
+  .mt-4
+    %p The following courses are available for registration:
+    = render_datatable(available, simple: true)

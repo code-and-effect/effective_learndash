@@ -8,12 +8,11 @@ module Effective
 
     log_changes(to: :learndash_course, except: [:last_synced_at]) if respond_to?(:log_changes)
 
-    # Only admin can mark finished
-    # Finished is treated as an admin override for completed?
-    PROGRESS_STATUSES = ['not-started', 'in-progress', 'completed', 'finished']
+    PROGRESS_STATUSES = ['not-started', 'in-progress', 'completed']
 
     effective_resource do
       last_synced_at      :string
+      admin_completed     :boolean
 
       # Wordpress
       progress_status     :string
@@ -28,7 +27,7 @@ module Effective
       timestamps
     end
 
-    scope :completed, -> { where(progress_status: ['completed', 'finished']) }
+    scope :completed, -> { where(progress_status: 'completed').or(where(admin_completed: true)) }
     scope :in_progress, -> { where(progress_status: 'in-progress') }
     scope :not_started, -> { where(progress_status: 'not-started') }
 
@@ -63,35 +62,27 @@ module Effective
       progress_status == 'in-progress'
     end
 
-    # Admin override to completed
-    def finished?
-      progress_status == 'finished'
-    end
-
     # Checked to see if the course is done throughout
     def completed?
-      progress_status == 'completed' || finished?
+      progress_status == 'completed' || admin_completed?
     end
 
     def completed_on
-      date_completed || (created_at if finished?)
+      date_completed
     end
 
-    def mark_as_finished!
-      update!(progress_status: 'finished')
+    # This is an admin action only
+    def mark_as_completed!
+      self.date_started ||= Time.zone.now
+      self.date_completed ||= Time.zone.now
+
+      update!(progress_status: 'completed', admin_completed: true)
     end
 
-    # Guess old status
-    def unfinish!
-      if date_completed.present?
-        assign_attributes(progress_status: 'completed')
-      elsif date_started.present?
-        assign_attributes(progress_status: 'in-progress')
-      else
-        assign_attributes(progress_status: 'not-started')
-      end
-
-      save!
+    # This is an admin action only
+    def uncomplete!
+      assign_attributes(date_started: nil, date_completed: nil, progress_status: nil, admin_completed: false)
+      refresh!
     end
 
     def refresh!(force: false)
@@ -113,11 +104,19 @@ module Effective
         last_step: data[:last_step],
         steps_completed: data[:steps_completed],
         steps_total: data[:steps_total],
-        date_started: Time.use_zone('UTC') { Time.zone.parse(data[:date_started]) },
-        date_completed: (Time.use_zone('UTC') { Time.zone.parse(data[:date_completed]) } if data[:date_completed].present?)
       )
 
-      assign_attributes(progress_status: data[:progress_status]) unless finished?
+      if (date = data[:date_started]).present?
+        assign_attributes(date_started: Time.use_zone('UTC') { Time.zone.parse(date) })
+      end
+
+      if (date = data[:date_completed]).present?
+        assign_attributes(date_completed: Time.use_zone('UTC') { Time.zone.parse(date) })
+      end
+
+      unless completed?
+        assign_attributes(progress_status: data[:progress_status])
+      end
 
       true
     end

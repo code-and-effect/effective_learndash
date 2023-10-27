@@ -48,6 +48,7 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.0]
       t.integer :learndash_user_id
 
       t.datetime :last_synced_at
+      t.boolean :admin_completed, default: false
 
       # Wordpress
       t.string :progress_status

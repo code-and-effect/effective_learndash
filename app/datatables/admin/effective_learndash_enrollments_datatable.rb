@@ -19,6 +19,7 @@ module Admin
       col :learndash_course
 
       col :progress_status
+      col :admin_completed, visible: false
 
       col :last_step, visible: false
       col :steps_completed, visible: false

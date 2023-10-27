@@ -9,9 +9,7 @@ class EffectiveLearndashAvailableCoursesDatatable < Effective::Datatable
     end
 
     actions_col show: false do |learndash_course|
-      if current_user.learndash_enrollment(course: learndash_course).present?
-        'Registered. Please access from the home dashboard or applicant wizard.'
-      elsif learndash_course.can_register?
+      if learndash_course.can_register?
         dropdown_link_to('Register', effective_learndash.new_learndash_course_course_registration_path(learndash_course))
       end
     end

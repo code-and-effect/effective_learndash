@@ -49,9 +49,6 @@ module EffectiveLearndashCourseRegistration
     has_many :course_registrants, -> { order(:id) }, class_name: 'Effective::CourseRegistrant', inverse_of: :course_registration, dependent: :destroy
     accepts_nested_attributes_for :course_registrants, reject_if: :all_blank, allow_destroy: true
 
-    has_many :orders, -> { order(:id) }, as: :parent, class_name: 'Effective::Order', dependent: :nullify
-    accepts_nested_attributes_for :orders
-
     effective_resource do
       # Acts as Statused
       status                 :string, permitted: false

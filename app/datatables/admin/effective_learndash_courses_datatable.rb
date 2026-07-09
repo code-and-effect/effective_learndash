@@ -16,8 +16,7 @@ module Admin
       col :learndash_users, visible: false
 
       col :can_register
-      col :regular_price, as: :price
-      col :member_price, as: :price
+      # Prices now live on date-ranged CourseFeeHistory records — see Admin::CourseFeeHistoriesDatatable.
 
       actions_col
     end

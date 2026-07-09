@@ -31,14 +31,30 @@ class CreateEffectiveLearndash < ActiveRecord::Migration[6.0]
       # Course Purchases
       t.boolean :can_register, default: false
 
-      t.integer :regular_price
-      t.integer :member_price
+      # Prices live on dated course_fee_histories (see below), not flat columns.
 
       t.string :qb_item_name
       t.boolean :tax_exempt, default: false
 
       t.timestamps
     end
+
+    # Dated prices for a learndash course. The open-ended (end_on: nil) row holds the
+    # current, ongoing prices; earlier rows are scheduled/expired price lists.
+    create_table :course_fee_histories do |t|
+      t.integer :learndash_course_id
+
+      t.date :start_on
+      t.date :end_on
+
+      t.integer :regular_fee
+      t.integer :member_fee
+
+      t.datetime :updated_at
+      t.datetime :created_at
+    end
+
+    add_index :course_fee_histories, :learndash_course_id
 
     create_table :learndash_enrollments do |t|
       t.integer :owner_id

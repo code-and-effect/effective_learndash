@@ -31,6 +31,10 @@ EffectiveLearndash::Engine.routes.draw do
       get :refresh, on: :collection
     end
 
+    resources :course_fee_histories, except: [:show] do
+      post :duplicate, on: :member
+    end
+
     resources :course_registrants, only: [:index]
     resources :course_registrations, only: [:index, :show]
   end

@@ -3,6 +3,10 @@ module Effective
     has_many :learndash_enrollments
     has_many :learndash_users, through: :learndash_enrollments
 
+    # Dated prices. The open-ended (end_on: nil) history holds the current prices. Read via #prices.
+    has_many :course_fee_histories, -> { order(start_on: :desc) },
+      class_name: 'Effective::CourseFeeHistory', dependent: :destroy
+
     log_changes if respond_to?(:log_changes)
 
     # rich_text_body - Used by the select step
@@ -31,9 +35,10 @@ module Effective
       # For course purchases
       can_register           :boolean
 
-      # Pricing
-      regular_price         :integer
-      member_price          :integer
+      # Pricing now lives on dated course_fee_histories, read via #prices / #regular_price /
+      # #member_price. These columns still exist in the database (a later migration drops them).
+      # regular_price       :integer
+      # member_price        :integer
 
       qb_item_name          :string
       tax_exempt            :boolean
@@ -80,10 +85,7 @@ module Effective
     validates :status, presence: true
     validates :title, presence: true
 
-    with_options(if: -> { can_register? }) do
-      validates :regular_price, presence: true
-      validates :member_price, presence: true
-    end
+    # Price presence now lives on CourseFeeHistory (validated when can_register?).
 
     # Syncs all courses
     def self.refresh!
@@ -108,6 +110,58 @@ module Effective
     # Todo
     def draft?
       false
+    end
+
+    # The CourseFeeHistory (price list) in effect on the given date — today by default.
+    # Prices used to live in flat columns here; read them off this record now:
+    #
+    #   course.prices.regular_fee                 # price right now
+    #   course.prices(date: date).member_fee      # price in effect on date
+    #
+    # Raises if no history covers the date so misconfiguration surfaces loudly.
+    def prices(date: nil)
+      date = (date || Time.zone.now).to_date
+
+      # course_fee_histories is ordered start_on desc — pick the newest window covering the
+      # date. end_on nil makes an endless range (start_on..), i.e. the current prices.
+      course_fee_histories.find { |history| (history.start_on..history.end_on).cover?(date) } ||
+        raise("No course_fee_history prices available for #{self} on #{date.strftime('%F')}, add a course fee history covering that date")
+    end
+
+    # Backwards-compatible readers so existing call sites keep working after prices moved to
+    # dated histories. These override the retired flat columns.
+    def regular_price(date: nil)
+      prices(date: date).regular_fee
+    end
+
+    def member_price(date: nil)
+      prices(date: date).member_fee
+    end
+
+    # Non-blocking warnings about the price timeline, shown on the admin edit screen. Prices
+    # should form one continuous timeline with a single open-ended (current) history.
+    def course_fee_histories_warnings
+      histories = course_fee_histories.sort_by(&:start_on)
+      return ['No prices have been set — add a course fee history.'] if histories.empty?
+
+      warnings = []
+
+      current = histories.select { |history| history.end_on.blank? }
+      warnings << 'There are no current prices — the most recent history should have no end date.' if current.empty?
+      warnings << 'There is more than one current history (more than one with no end date).' if current.size > 1
+
+      # Each history should pick up the day after the previous one ends — no gaps, no overlaps.
+      histories.each_cons(2) do |earlier, later|
+        next if earlier.end_on.blank? # an open-ended history in the middle is flagged above
+
+        if later.start_on > earlier.end_on + 1.day
+          warnings << "Gap in prices between #{earlier.end_on} and #{later.start_on}."
+        elsif later.start_on <= earlier.end_on
+          warnings << "Overlapping prices around #{later.start_on}."
+        end
+      end
+
+      warnings
     end
 
   end

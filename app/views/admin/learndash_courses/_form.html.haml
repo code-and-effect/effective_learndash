@@ -3,6 +3,16 @@
     = render 'admin/learndash_courses/form_learndash_course', learndash_course: learndash_course
 
   - if learndash_course.persisted?
+    = tab 'Pricing' do
+      %h2 Pricing
+      %p Prices are kept in date-ranged histories so they can be scheduled to change over time. The history with no end date holds the current, ongoing prices.
+
+      - learndash_course.course_fee_histories_warnings.each do |warning|
+        .alert.alert-warning= warning
+
+      - datatable = Admin::CourseFeeHistoriesDatatable.new(learndash_course: learndash_course)
+      = render_inline_datatable(datatable)
+
     = tab 'Enrollments' do
       %h2 Enrollments
       %p Click the New button from the below table to enroll a user into this course.

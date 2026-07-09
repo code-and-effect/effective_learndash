@@ -1,0 +1,25 @@
+= effective_form_with(model: [:admin, course_fee_history], engine: true) do |f|
+  - course = course_fee_history.learndash_course
+
+  - if course.present?
+    = f.hidden_field :learndash_course_id
+    = f.static_field :learndash_course, label: 'Course' do
+      = course.to_s
+  - else
+    = f.select :learndash_course_id, Effective::LearndashCourse.sorted, label: 'Course'
+
+  %p These prices take effect on the start date, and apply until the next history begins. Leave the end date blank for the current, ongoing prices.
+
+  .row
+    .col-lg-4= f.date_field :start_on
+    -# date_linked: false stops effective_bootstrap auto-filling end_on from start_on — blank means ongoing.
+    .col-lg-4= f.date_field :end_on, date_linked: false, hint: 'leave blank for the current, ongoing prices'
+
+  %h2 Pricing
+  %p Charge the following amounts during course registration. Enter $0 for free.
+
+  .row
+    .col-lg-4= f.price_field :regular_fee, label: 'Price to applicants or new users'
+    .col-lg-4= f.price_field :member_fee, label: 'Price to existing members'
+
+  = effective_submit(f)

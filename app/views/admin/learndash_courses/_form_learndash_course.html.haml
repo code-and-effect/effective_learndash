@@ -15,14 +15,10 @@
 
   = f.show_if :can_register, true do
     = card('Pricing Information') do
-      %p.text-muted
-        Charge the following amounts during course registration. Enter $0 for free.
-
-      .row
-        .col-lg-3= f.price_field :regular_price, label: 'Price to applicants or new users'
-
-      .row
-        .col-lg-3= f.price_field :member_price, label: 'Price to existing members'
+      - if f.object.persisted?
+        %p.text-muted Prices are set on dated histories — see the Pricing tab.
+      - else
+        %p.text-muted Save this course, then set its prices on the Pricing tab.
 
       = f.check_box :tax_exempt
 

@@ -16,7 +16,7 @@ module Admin
       success: -> { "Copied #{resource.learndash_course}'s prices forward — set next year's prices on the new history." })
 
     def permitted_params
-      params.require(:course_fee_history).permit!
+      params.require(:effective_course_fee_history).permit!
     end
 
   end

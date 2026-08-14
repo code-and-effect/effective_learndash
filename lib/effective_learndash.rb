@@ -57,7 +57,7 @@ module EffectiveLearndash
   end
 
   def self.CourseRegistration
-    course_registration_class_name&.constantize || Effective::CourseRegistration
+    klass(:course_registration)
   end
 
 end

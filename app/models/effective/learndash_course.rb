@@ -56,7 +56,7 @@ module Effective
     scope :published, -> { all }
 
     scope :paginate, -> (page: nil, per_page: nil) {
-      page = (page || 1).to_i
+      page = EffectiveResources.normalize_page(page)
       offset = [(page - 1), 0].max * (per_page || EffectiveLearndash.per_page)
 
       limit(per_page).offset(offset)

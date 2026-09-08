@@ -20,7 +20,7 @@ class EffectiveCourseRegistrationsDatatable < Effective::Datatable
 
     actions_col(actions: []) do |registration|
       if registration.draft?
-        dropdown_link_to('Continue', effective_learndash.learndash_course_course_registration_build_path(registration.learndash_course, registration, registration.next_step), 'data-turbolinks' => false)
+        dropdown_link_to('Continue', effective_learndash.learndash_course_course_registration_build_path(registration.learndash_course, registration, registration.next_step), 'data-turbolinks' => false, 'data-turbo' => false)
         dropdown_link_to('Delete', effective_learndash.learndash_course_course_registration_path(registration.learndash_course, registration), 'data-confirm': "Really delete #{registration}?", 'data-method': :delete)
       else
         dropdown_link_to('Show', effective_learndash.learndash_course_course_registration_path(registration.learndash_course, registration))

@@ -12,7 +12,7 @@
 
   %p
     Please
-    = link_to("Continue registration for #{wizard.learndash_course}", effective_learndash.learndash_course_course_registration_build_path(wizard.learndash_course, wizard, wizard.next_step), 'data-turbolinks' => false, class: 'btn btn-primary')
+    = link_to("Continue registration for #{wizard.learndash_course}", effective_learndash.learndash_course_course_registration_build_path(wizard.learndash_course, wizard, wizard.next_step), 'data-turbolinks' => false, 'data-turbo' => false, class: 'btn btn-primary')
     or you can
     = link_to('Abandon course registration', effective_learndash.learndash_course_course_registration_path(wizard.learndash_course, wizard), 'data-confirm': "Really delete #{wizard}?", 'data-method': :delete, class: 'btn btn-danger')
     to register for another course.

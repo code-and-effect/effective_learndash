@@ -106,16 +106,18 @@ module Effective
         steps_total: data[:steps_total],
       )
 
-      if (date = data[:date_started]).present?
+      date = data.key?(:date_started_gmt) ? data[:date_started_gmt] : data[:date_started]
+      if date.present?
         assign_attributes(date_started: Time.use_zone('UTC') { Time.zone.parse(date) })
       end
 
-      if (date = data[:date_completed]).present?
+      date = data.key?(:date_completed_gmt) ? data[:date_completed_gmt] : data[:date_completed]
+      if date.present?
         assign_attributes(date_completed: Time.use_zone('UTC') { Time.zone.parse(date) })
       end
 
       unless completed?
-        assign_attributes(progress_status: data[:progress_status])
+        assign_attributes(progress_status: data[:progress_status]&.tr('_', '-'))
       end
 
       true

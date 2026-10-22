@@ -101,6 +101,25 @@ https://make.wordpress.org/core/2020/11/05/application-passwords-integration-gui
 
 and fill in the username/password details in config/initializers/effective_learndash.rb
 
+## LearnDash API compatibility
+
+The integration uses WordPress REST API v2 and LearnDash `ldlms/v2` endpoints.
+LearnDash 4 and 5 course-progress responses are supported: incoming underscore
+statuses such as `in_progress` are stored using the existing `in-progress` format.
+The `date_started_gmt` and `date_completed_gmt` fields are used when supplied;
+older responses without those fields retain their previous UTC interpretation.
+Both object and legacy array responses are supported for individual progress records.
+No database migration is required.
+
+Users, courses, user searches, and course-progress collections follow the
+`X-WP-TotalPages` response header with up to 100 records per request. An individual
+resource returning HTTP 404 is treated as missing; other unsuccessful GET requests
+raise `Effective::LearndashApi::Error`, rather than triggering user or enrollment
+creation after an authentication or server failure.
+
+See the [LearnDash 5 API changes](https://docs.nexcess.com/software/changelogs/learndash/sfwd-lms/5-0-0/)
+and [WordPress pagination reference](https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/).
+
 ## Working with LearnDash
 
 Visit `/admin/learndash_courses` and Refresh the list of Courses.

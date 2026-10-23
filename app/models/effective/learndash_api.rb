@@ -2,6 +2,7 @@ require 'net/http'
 
 module Effective
   class LearndashApi
+    class Error < StandardError; end
 
     attr_accessor :url
     attr_accessor :username
@@ -22,7 +23,7 @@ module Effective
 
     # List users
     def users
-      get('/wp/v2/users')
+      get_collection('/wp/v2/users')
     end
 
     # Returns a WP Hash of User or nil
@@ -90,14 +91,14 @@ module Effective
 
     # List Courses
     def courses
-      get('/ldlms/v2/sfwd-courses')
+      get_collection('/ldlms/v2/sfwd-courses')
     end
 
     # List User Course Progress
     def user_enrollments(user)
       user = user_id(user) || raise('expected a user')
 
-      get("/ldlms/v2/users/#{user}/course-progress")
+      get_collection("/ldlms/v2/users/#{user}/course-progress")
     end
 
     # Helper methods for enrollments
@@ -195,33 +196,41 @@ module Effective
       raise('expected a symbol key') unless key.kind_of?(Symbol)
       raise('expected a value') unless value.present?
 
-      response = get(endpoint, { search: value, context: :edit })
+      get_collection(endpoint, search: value, context: :edit).find { |data| data[key] == value }
+    end
 
-      collection = Array(
-        if response == false
-          nil
-        elsif response.kind_of?(Hash) && response.dig(:data, :status) == 404
-          nil
-        elsif response.kind_of?(Hash)
-          response
-        elsif response.kind_of?(Array)
-          response
-        else
-          raise("unexpected LearnDash API find_by response #{response}")
+    # Follow WordPress pagination headers for collection endpoints only.
+    def get_collection(endpoint, params = nil)
+      collection = []
+      page = 1
+      total_pages = 1
+
+      loop do
+        response = get(endpoint, (params || {}).merge(per_page: 100, page: page)) do |http_response|
+          total_pages = http_response['X-WP-TotalPages'].to_i if http_response['X-WP-TotalPages'].present?
         end
-      )
 
-      resource = collection.find { |data| data[key] == value }
-      resource
+        unless response.kind_of?(Array)
+          raise(Error, "Unexpected LearnDash API collection: #{endpoint}")
+        end
+
+        collection.concat(response)
+        break if page >= total_pages
+
+        page += 1
+      end
+
+      collection
     end
 
     def get(endpoint, params = nil)
-      query = ('?' + params.compact.map { |k, v| "#{k}=#{v}" }.join('&')) if params.present?
+      query = ('?' + URI.encode_www_form(params.compact)) if params.present?
 
       uri = URI.parse(api_url + endpoint + query.to_s)
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
+      http.open_timeout = 10
       http.read_timeout = 10
 
       response = with_retries do
@@ -229,11 +238,10 @@ module Effective
         http.get(uri, headers)
       end
 
-      unless response.code.start_with?('2')
-        puts("Response code: #{response.code} #{response.body}") if Rails.env.development?
-        return false
-      end
+      return false if response.code == '404'
+      raise(Error, "Invalid LearnDash API response: HTTP #{response.code}") unless response.code.start_with?('2')
 
+      yield(response) if block_given?
       JSON.parse(response.body, symbolize_names: true)
     end
 
@@ -242,10 +250,11 @@ module Effective
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = (uri.scheme == 'https')
+      http.open_timeout = 10
       http.read_timeout = 10
 
       response = with_retries do
-        puts("[POST] #{uri} #{params}") if Rails.env.development?
+        puts("[POST] #{uri}") if Rails.env.development?
         http.post(uri.path, (params || {}).to_json, headers)
       end
 
